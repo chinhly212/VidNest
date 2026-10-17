@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101827">
+  <title>VidNest Admin</title>
+  <style>
+    :root {
+      --bg: #0b1120;
+      --panel: #111c30;
+      --panel2: #17243b;
+      --border: #263750;
+      --text: #edf4ff;
+      --muted: #91a4bf;
+      --blue: #4f9cff;
+      --green: #31d6a0;
+      --orange: #ffbd69;
+      --red: #ff737d;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, system-ui, Arial, sans-serif;
+    }
+
+    button, input, select { font: inherit; }
+
+    button { cursor: pointer; }
+
+    .layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 245px;
+      flex-shrink: 0;
+      background: #0e1829;
+      border-right: 1px solid var(--border);
+      padding: 24px 15px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 0 10px 28px;
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .logo {
+      display: grid;
+      place-items: center;
+      width: 39px;
+      height: 39px;
+      border-radius: 12px;
+      color: white;
+      background: linear-gradient(135deg, #248cff, #6657ed);
+    }
+
+    .brand small {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .nav-label {
+      padding: 16px 11px 8px;
+      color: #7185a3;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+    }
+
+    .nav {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .nav button {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 12px;
+      color: #a9bad1;
+      text-align: left;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 9px;
+    }
+
+    .nav button:hover,
+    .nav button.active {
+      color: white;
+      background: #1a2b46;
+      border-color: #2b4161;
+    }
+
+    .nav button.active {
+      box-shadow: inset 3px 0 var(--blue);
+    }
+
+    .sidebar-bottom {
+      margin-top: 35px;
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--panel);
+    }
+
+    .sidebar-bottom strong { font-size: 12px; }
+    .sidebar-bottom p {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    .main {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      padding: 18px 30px;
+      background: #0e1728;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .topbar h2 { margin: 0; font-size: 18px; }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .status {
+      color: var(--green);
+      font-size: 12px;
+    }
+
+    .avatar {
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      background: #263f64;
+      border-radius: 50%;
+      font-weight: 800;
+    }
+
+    .content { padding: 28px; }
+
+    .welcome {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    h1 { margin: 0 0 8px; font-size: 26px; }
+    .subtitle { color: var(--muted); font-size: 13px; }
+
+    .btn {
+      padding: 10px 14px;
+      color: white;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: var(--panel2);
+    }
+
+    .btn.primary {
+      background: #287ee8;
+      border-color: #287ee8;
+    }
+
+    .btn:hover { filter: brightness(1.13); }
+
+    .notice {
+      padding: 13px 15px;
+      margin-bottom: 22px;
+      color: #ffdc9d;
+      background: #34291c;
+      border: 1px solid #604b2b;
+      border-radius: 10px;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .card {
+      min-width: 0;
+      padding: 20px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 13px;
+    }
+
+    .stat-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .stat-icon {
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: #1c3556;
+      font-size: 17px;
+    }
+
+    .stat-number {
+      margin-top: 18px;
+      font-size: 29px;
+      font-weight: 800;
+    }
+
+    .stat-foot {
+      margin-top: 9px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .good { color: var(--green); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.6fr) minmax(250px, 1fr);
+      gap: 18px;
+    }
+
+    .panel {
+      overflow: hidden;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      margin-bottom: 18px;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .panel-head h3 { margin: 0; font-size: 14px; }
+
+    .panel-body { padding: 20px; }
+
+    .activity {
+      display: flex;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid #24334a;
+    }
+
+    .activity:last-child { border-bottom: 0; }
+
+    .activity-icon {
+      display: grid;
+      place-items: center;
+      width: 35px;
+      height: 35px;
+      flex-shrink: 0;
+      background: #1c3556;
+      border-radius: 10px;
+    }
+
+    .activity strong { font-size: 12px; }
+    .activity p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    .security-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 0;
+      border-bottom: 1px solid #24334a;
+      font-size: 12px;
+    }
+
+    .security-row:last-child { border-bottom: 0; }
+
+    .pill {
+      display: inline-block;
+      padding: 5px 8px;
+      color: var(--green);
+      background: #15392f;
+      border-radius: 20px;
+      font-size: 10px;
+      white-space: nowrap;
+    }
+
+    .pill.warn {
+      color: var(--orange);
+      background: #3b3020;
+    }
+
+    .section { display: none; }
+    .section.active { display: block; }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .toolbar input, .toolbar select {
+      min-width: 0;
+      padding: 10px 12px;
+      color: var(--text);
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+    }
+
+    .toolbar input { flex: 1; }
+
+    .table-wrap { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    th, td {
+      padding: 14px 18px;
+      border-bottom: 1px solid #24334a;
+      font-size: 12px;
+    }
+
+    th {
+      color: var(--muted);
+      font-weight: 600;
+      background: #101a2c;
+    }
+
+    td { color: #dce7f7; }
+    tr:last-child td { border-bottom: 0; }
+
+    .empty {
+      padding: 35px 15px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 13px;
+    }
+
+    .settings-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .settings-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      padding: 16px;
+      background: #142139;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+
+    .settings-item strong { font-size: 13px; }
+    .settings-item p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .footer {
+      padding: 22px 0 4px;
+      color: #7185a3;
+      text-align: center;
+      font-size: 11px;
+    }
+
+    @media (max-width: 1000px) {
+      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 700px) {
+      .layout { display: block; }
+      .sidebar {
+        width: 100%;
+        padding: 12px;
+        border-right: 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .brand { padding: 5px 8px 13px; }
+      .nav-label, .sidebar-bottom { display: none; }
+      .nav {
+        flex-direction: row;
+        overflow-x: auto;
+        padding-bottom: 3px;
+      }
+      .nav button {
+        width: auto;
+        flex-shrink: 0;
+        padding: 10px;
+        font-size: 12px;
+      }
+      .topbar { padding: 15px; }
+      .content { padding: 16px; }
+      h1 { font-size: 22px; }
+      .stats { gap: 10px; }
+      .card { padding: 14px; }
+      .stat-number { font-size: 24px; }
+      .welcome { align-items: flex-start; }
+      .welcome .btn { font-size: 11px; }
+    }
+  </style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo">V</div>
+      <div>VidNest <small>ADMIN CONSOLE</small></div>
+    </div>
+
+    <div class="nav-label">WORKSPACE</div>
+    <nav class="nav">
+      <button class="active" data-page="overview">▦ Tổng quan</button>
+      <button data-page="users">♙ Người dùng</button>
+      <button data-page="roles">♜ Phân quyền</button>
+      <button data-page="security">⛨ Bảo mật</button>
+      <button data-page="logs">☷ Nhật ký</button>
+      <button data-page="settings">⚙ Cài đặt</button>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <strong>VidNest Control Center</strong>
+      <p>Giao diện quản trị hệ thống VidNest.</p>
+      <span class="pill warn">Bản giao diện thử nghiệm</span>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <h2 id="pageTitle">Tổng quan hệ thống</h2>
+      <div class="top-actions">
+        <span class="status">● Giao diện hoạt động</span>
+        <div class="avatar">S</div>
+      </div>
+    </header>
+
+    <div class="content">
+      <section class="section active" id="overview">
+        <div class="welcome">
+          <div>
+            <h1>Xin chào, Super Admin 👋</h1>
+            <div class="subtitle">Chào mừng đến với trung tâm quản trị VidNest.</div>
+          </div>
+          <button class="btn primary" onclick="showPage('users')">Quản lý người dùng ↗</button>
+        </div>
+
+        <div class="notice">
+          ⚠️ <strong>Chế độ xem trước:</strong> Các số liệu bên dưới là dữ liệu minh họa.
+          Chưa kết nối dữ liệu tài khoản thật từ Supabase.
+        </div>
+
+        <div class="stats">
+          <div class="card">
+            <div class="stat-top">Tổng tài khoản <span class="stat-icon">♙</span></div>
+            <div class="stat-number">—</div>
+            <div class="stat-foot">Chờ kết nối Supabase</div>
+          </div>
+          <div class="card">
+            <div class="stat-top">Đã xác minh email <span class="stat-icon">✓</span></div>
+            <div class="stat-number">—</div>
+            <div class="stat-foot">Chờ tải dữ liệu thật</div>
+          </div>
+          <div class="card">
+            <div class="stat-top">Quản trị viên <span class="stat-icon">♜</span></div>
+            <div class="stat-number">—</div>
+            <div class="stat-foot">Đọc từ bảng phân quyền</div>
+          </div>
+          <div class="card">
+            <div class="stat-top">Trạng thái hệ thống <span class="stat-icon">◈</span></div>
+            <div class="stat-number" style="font-size:23px">Chưa kết nối</div>
+            <div class="stat-foot">Chưa kiểm tra API</div>
+          </div>
+        </div>
+
+        <div class="grid">
+          <div class="panel">
+            <div class="panel-head">
+              <h3>Hoạt động gần đây</h3>
+              <span class="pill warn">Chưa có dữ liệu thật</span>
+            </div>
+            <div class="panel-body">
+              <div class="activity">
+                <div class="activity-icon">🔐</div>
+                <div><strong>Thiết lập bảng phân quyền</strong><p>Đã tạo bảng user_roles trong Supabase.</p></div>
+              </div>
+              <div class="activity">
+                <div class="activity-icon">👑</div>
+                <div><strong>Cấu hình vai trò Super Admin</strong><p>Đã gán vai trò cho tài khoản được chọn.</p></div>
+              </div>
+              <div class="activity">
+                <div class="activity-icon">🛡️</div>
+                <div><strong>Bật Row Level Security</strong><p>Đã bật RLS cho bảng user_roles.</p></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head"><h3>Trung tâm hệ thống</h3></div>
+            <div class="panel-body">
+              <div class="security-row"><span>Giao diện Admin</span><span class="pill">Đang chạy</span></div>
+              <div class="security-row"><span>Kết nối Supabase</span><span class="pill warn">Chưa kết nối</span></div>
+              <div class="security-row"><span>Quản lý tài khoản thật</span><span class="pill warn">Chưa bật</span></div>
+              <div class="security-row"><span>Nhật ký máy chủ</span><span class="pill warn">Chưa bật</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="users">
+        <div class="welcome">
+          <div>
+            <h1>Quản lý người dùng</h1>
+            <div class="subtitle">Tìm kiếm và theo dõi tài khoản VidNest.</div>
+          </div>
+        </div>
+        <div class="notice">Danh sách sẽ hiển thị tài khoản thật sau khi tích hợp API an toàn. Không có thao tác khóa hoặc xóa tài khoản thật ở bản này.</div>
+        <div class="toolbar">
+          <input id="userSearch" type="search" placeholder="Tìm theo email hoặc User ID..." oninput="filterTable()">
+          <select id="userFilter" onchange="filterTable()">
+            <option value="">Tất cả trạng thái</option>
+            <option value="Đã xác minh">Đã xác minh</option>
+            <option value="Chưa xác minh">Chưa xác minh</option>
+          </select>
+        </div>
+        <div class="panel">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>TÀI KHOẢN</th><th>USER ID</th><th>XÁC MINH EMAIL</th><th>VAI TRÒ</th></tr></thead>
+              <tbody id="usersTable">
+                <tr><td colspan="4" class="empty">Chưa kết nối dữ liệu người dùng.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="roles">
+        <div class="welcome">
+          <div>
+            <h1>Phân quyền hệ thống</h1>
+            <div class="subtitle">Danh sách vai trò dự kiến của VidNest.</div>
+          </div>
+        </div>
+        <div class="notice">Bản này chỉ hiển thị mô tả vai trò. Chưa có chức năng thay đổi quyền thật.</div>
+        <div class="panel">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>VAI TRÒ</th><th>QUYỀN HẠN</th><th>TRẠNG THÁI</th></tr></thead>
+              <tbody>
+                <tr><td><span class="pill">Super Admin</span></td><td>Quản trị cao nhất, quản lý vai trò</td><td>Đã cấu hình trong cơ sở dữ liệu</td></tr>
+                <tr><td><span class="pill">Admin</span></td><td>Quản lý người dùng theo quyền được cấp</td><td>Vai trò dự kiến</td></tr>
+                <tr><td><span class="pill warn">Moderator</span></td><td>Kiểm duyệt nội dung và báo cáo</td><td>Vai trò dự kiến</td></tr>
+                <tr><td><span class="pill warn">Support</span></td><td>Hỗ trợ người dùng, quyền hạn giới hạn</td><td>Vai trò dự kiến</td></tr>
+                <tr><td>User</td><td>Sử dụng các chức năng thông thường</td><td>Mặc định</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="security">
+        <div class="welcome">
+          <div><h1>Trung tâm bảo mật</h1><div class="subtitle">Tổng hợp các hạng mục cần kiểm tra.</div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3>Trạng thái cấu hình</h3></div>
+          <div class="panel-body">
+            <div class="security-row"><span>Supabase Auth</span><span class="pill warn">Chưa kiểm tra kết nối</span></div>
+            <div class="security-row"><span>RLS trên user_roles</span><span class="pill">Đã bật</span></div>
+            <div class="security-row"><span>Kiểm tra quyền phía máy chủ</span><span class="pill warn">Chưa xác minh</span></div>
+            <div class="security-row"><span>Khóa bí mật trong HTML</span><span class="pill">Không được phép</span></div>
+            <div class="security-row"><span>Nhật ký sự kiện máy chủ</span><span class="pill warn">Chưa thiết lập</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="logs">
+        <div class="welcome">
+          <div><h1>Nhật ký quản trị</h1><div class="subtitle">Theo dõi các hoạt động quản trị quan trọng.</div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3>Nhật ký hoạt động</h3></div>
+          <div class="empty">Chưa có nhật ký từ máy chủ. Các sự kiện thật sẽ được ghi nhận sau khi tích hợp backend.</div>
+        </div>
+      </section>
+
+      <section class="section" id="settings">
+        <div class="welcome">
+          <div><h1>Cài đặt hệ thống</h1><div class="subtitle">Thông tin và cấu hình VidNest Admin.</div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3>Cấu hình chung</h3></div>
+          <div class="panel-body settings-list">
+            <div class="settings-item"><div><strong>Tên hệ thống</strong><p>VidNest</p></div><span class="pill">Đã đặt</span></div>
+            <div class="settings-item"><div><strong>Nhà cung cấp xác thực</strong><p>Supabase Auth</p></div><span class="pill">Đã chọn</span></div>
+            <div class="settings-item"><div><strong>Cơ sở dữ liệu</strong><p>Supabase PostgreSQL</p></div><span class="pill">Đã tạo bảng quyền</span></div>
+            <div class="settings-item"><div><strong>API quản trị</strong><p>Cần tích hợp Edge Function và kiểm tra quyền phía máy chủ.</p></div><span class="pill warn">Đang chờ</span></div>
+          </div>
+        </div>
+      </section>
+
+      <div class="footer">VidNest Admin · Control Center · Preview</div>
+    </div>
+  </main>
+</div>
+
+<script>
+  const titles = {
+    overview: "Tổng quan hệ thống",
+    users: "Quản lý người dùng",
+    roles: "Phân quyền hệ thống",
+    security: "Trung tâm bảo mật",
+    logs: "Nhật ký quản trị",
+    settings: "Cài đặt hệ thống"
+  };
+
+  function showPage(page) {
+    document.querySelectorAll(".section").forEach(section => {
+      section.classList.toggle("active", section.id === page);
+    });
+
+    document.querySelectorAll(".nav button").forEach(button => {
+      button.classList.toggle("active", button.dataset.page === page);
+    });
+
+    document.getElementById("pageTitle").textContent = titles[page] || "VidNest Admin";
+  }
+
+  document.querySelectorAll(".nav button").forEach(button => {
+    button.addEventListener("click", () => showPage(button.dataset.page));
+  });
+
+  function filterTable() {
+    const search = document.getElementById("userSearch").value.toLowerCase();
+    const filter = document.getElementById("userFilter").value;
+
+    document.querySelectorAll("#usersTable tr").forEach(row => {
+      const text = row.textContent.toLowerCase();
+      const matchesSearch = text.includes(search);
+      const matchesFilter = !filter || text.includes(filter);
+      row.style.display = matchesSearch && matchesFilter ? "" : "none";
+    });
+  }
+</script>
+</body>
+</html>
