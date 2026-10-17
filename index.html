@@ -564,9 +564,17 @@ footer{border-top:1px solid var(--border);margin-top:34px;padding:20px 0;text-al
   <button data-page="settings" onclick="showPage('settings')"><span class="nav-icon">⚙</span>Cài đặt</button>
 </nav>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const $ = id => document.getElementById(id);
+const SUPABASE_URL = 'https://xztwgjuherkqdvebkovz.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = sb_publishable_F5BitF69W3Tz1pPO-T-Y_A_TToc4t9n
 
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY
+);
+
+const $ = id => document.getElementById(id);
 function showPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));
   document.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
@@ -667,23 +675,176 @@ $('urlForm').addEventListener('submit',e=>{
   }
 });
 
-// Demo-only forms: no credentials are stored or sent.
-$('loginForm').addEventListener('submit',e=>{
+// ===== VIBNEST AUTH: SUPABASE =====
+
+function showAuthError(id, error) {
+  console.error('VibNest Auth:', error);
+
+  const messages = {
+    'Invalid login credentials':
+      'Email hoặc mật khẩu không chính xác.',
+    'Email not confirmed':
+      'Hãy xác minh email trước khi đăng nhập.',
+    'User already registered':
+      'Email này đã được đăng ký.'
+  };
+
+  notice(
+    id,
+    messages[error.message] ||
+      'Không thể thực hiện yêu cầu. Hãy kiểm tra thông tin và thử lại.'
+  );
+}
+
+// ĐĂNG KÝ
+$('registerForm').addEventListener('submit', async e => {
   e.preventDefault();
-  notice('loginNotice','Chưa kết nối dịch vụ xác thực. Chức năng đăng nhập thật sẽ được xây dựng ở giai đoạn backend.');
-});
-$('registerForm').addEventListener('submit',e=>{
-  e.preventDefault();
-  if($('registerPassword').value!==$('registerConfirm').value){
-    notice('registerNotice','Mật khẩu xác nhận không khớp. Hãy kiểm tra lại.');
+
+  const name = $('registerName').value.trim();
+  const email = $('registerEmail').value.trim();
+  const password = $('registerPassword').value;
+  const confirm = $('registerConfirm').value;
+
+  if (password !== confirm) {
+    notice('registerNotice', 'Mật khẩu xác nhận không khớp.');
     return;
   }
-  notice('registerNotice','Biểu mẫu hợp lệ, nhưng chưa tạo tài khoản vì backend chưa được kết nối.');
+
+  const button = $('registerForm').querySelector('[type="submit"]');
+  button.disabled = true;
+
+  try {
+    const { data, error } = await supabaseClient.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { display_name: name }
+      }
+    });
+
+    if (error) throw error;
+
+    notice(
+      'registerNotice',
+      data.session
+        ? 'Đăng ký thành công! Chào mừng đến với VibNest.'
+        : 'Đăng ký thành công! Hãy kiểm tra email để xác minh tài khoản.'
+    );
+  } catch (error) {
+    showAuthError('registerNotice', error);
+  } finally {
+    button.disabled = false;
+  }
 });
-$('forgotForm').addEventListener('submit',e=>{
+
+// ĐĂNG NHẬP
+$('loginForm').addEventListener('submit', async e => {
   e.preventDefault();
-  notice('forgotNotice','Chức năng khôi phục mật khẩu cần backend và dịch vụ email. Chưa có email nào được gửi.');
+
+  const button = $('loginForm').querySelector('[type="submit"]');
+  button.disabled = true;
+
+  try {
+    const { error } = await supabaseClient.auth.signInWithPassword({
+      email: $('loginEmail').value.trim(),
+      password: $('loginPassword').value
+    });
+
+    if (error) throw error;
+
+    notice('loginNotice', 'Đăng nhập thành công!');
+    await refreshAccount();
+    showPage('account');
+  } catch (error) {
+    showAuthError('loginNotice', error);
+  } finally {
+    button.disabled = false;
+  }
 });
+
+// CẬP NHẬT TÀI KHOẢN
+async function refreshAccount() {
+  const { data, error } = await supabaseClient.auth.getUser();
+
+  if (error || !data.user) {
+    updateGuestUI();
+    return;
+  }
+
+  const user = data.user;
+  const email = user.email || '';
+  const name = user.user_metadata?.display_name ||
+    email.split('@')[0] || 'Người dùng';
+
+  $('sidebarName').textContent = name;
+  $('sidebarAvatar').textContent = name.charAt(0).toUpperCase();
+  $('profileName').textContent = name;
+  $('profileEmail').textContent = email;
+  $('profileAvatar').textContent = name.charAt(0).toUpperCase();
+  $('profileStatus').textContent = 'Đã đăng nhập';
+  $('statAccount').textContent = 'Đã đăng nhập';
+}
+
+// TRẠNG THÁI KHÁCH
+function updateGuestUI() {
+  $('sidebarName').textContent = 'Khách truy cập';
+  $('sidebarAvatar').textContent = 'V';
+  $('profileName').textContent = 'Khách truy cập';
+  $('profileEmail').textContent = 'Chưa đăng nhập';
+  $('profileAvatar').textContent = 'V';
+  $('profileStatus').textContent = 'Khách';
+  $('statAccount').textContent = 'Khách';
+}
+
+// QUÊN MẬT KHẨU
+$('forgotForm').addEventListener('submit', async e => {
+  e.preventDefault();
+
+  try {
+    const { error } =
+      await supabaseClient.auth.resetPasswordForEmail(
+        $('forgotEmail').value.trim(),
+        {
+          redirectTo: window.location.origin + window.location.pathname
+        }
+      );
+
+    if (error) throw error;
+
+    notice(
+      'forgotNotice',
+      'Nếu email hợp lệ, hướng dẫn khôi phục sẽ được gửi đến hộp thư.'
+    );
+  } catch (error) {
+    showAuthError('forgotNotice', error);
+  }
+});
+
+// THEO DÕI ĐĂNG NHẬP
+supabaseClient.auth.onAuthStateChange((event, session) => {
+  if (session?.user) {
+    refreshAccount();
+  } else {
+    updateGuestUI();
+  }
+});
+
+// KIỂM TRA PHIÊN
+refreshAccount();
+
+// ĐĂNG XUẤT
+async function logoutVibNest() {
+  const { error } = await supabaseClient.auth.signOut();
+
+  if (error) {
+    console.error(error);
+    alert('Không thể đăng xuất. Vui lòng thử lại.');
+    return;
+  }
+
+  updateGuestUI();
+  showPage('home');
+}
 </script>
 </body>
 </html>
