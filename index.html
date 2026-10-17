@@ -540,6 +540,87 @@ footer{border-top:1px solid var(--border);margin-top:34px;padding:20px 0;text-al
   <div class="card form-card">
     <div class="form-logo">✉</div>
     <h1>Quên mật khẩu?</h1>
+    // ===== ĐĂNG KÝ TÀI KHOẢN VIBNEST =====
+$('registerForm').addEventListener('submit', async e => {
+  e.preventDefault();
+
+  const name = $('registerName').value.trim();
+  const email = $('registerEmail').value.trim();
+  const password = $('registerPassword').value;
+  const confirm = $('registerConfirm').value;
+
+  if (password !== confirm) {
+    notice('registerNotice', 'Mật khẩu xác nhận không khớp.');
+    return;
+  }
+
+  if (password.length < 8) {
+    notice('registerNotice', 'Mật khẩu phải có ít nhất 8 ký tự.');
+    return;
+  }
+
+  const button = $('registerForm').querySelector(
+    'button[type="submit"]'
+  );
+
+  button.disabled = true;
+  button.textContent = 'Đang tạo tài khoản...';
+
+  try {
+    const { data, error } = await supabaseClient.auth.signUp({
+      email: email,
+      password: password,
+      options: {
+        data: {
+          display_name: name
+        },
+        emailRedirectTo: window.location.origin +
+          window.location.pathname
+      }
+    });
+
+    if (error) throw error;
+
+    if (data.user && !data.session) {
+      notice(
+        'registerNotice',
+        'Đăng ký thành công! Hãy kiểm tra email để xác minh tài khoản trước khi đăng nhập.'
+      );
+    } else if (data.user) {
+      notice(
+        'registerNotice',
+        'Tạo tài khoản thành công! Chào mừng bạn đến với VibNest.'
+      );
+    } else {
+      notice(
+        'registerNotice',
+        'Chưa nhận được phản hồi. Vui lòng thử lại.'
+      );
+    }
+
+    $('registerPassword').value = '';
+    $('registerConfirm').value = '';
+
+  } catch (error) {
+    console.error('VibNest registration error:', error);
+
+    const message = error.message || '';
+
+    if (message.includes('already registered')) {
+      notice('registerNotice', 'Email này đã được đăng ký.');
+    } else if (message.includes('Password')) {
+      notice('registerNotice', 'Mật khẩu chưa đáp ứng yêu cầu của hệ thống.');
+    } else {
+      notice(
+        'registerNotice',
+        'Không thể đăng ký. Hãy kiểm tra kết nối Supabase và thử lại.'
+      );
+    }
+  } finally {
+    button.disabled = false;
+    button.textContent = 'Tạo tài khoản';
+  }
+});
     <p class="page-description">Khôi phục quyền truy cập tài khoản VibNest.</p>
     <form id="forgotForm">
       <label class="label" for="forgotEmail">Email tài khoản</label>
