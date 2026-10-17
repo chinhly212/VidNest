@@ -1,931 +1,611 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#01497C">
-<meta name="description" content="VibNest User - Không gian quản lý video hiện đại.">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#01497c">
 <title>VibNest User</title>
-
 <style>
-:root{
-  --primary:#01497C;
-  --blue:#0878e8;
-  --bg:#E6F0F8;
-  --surface:#fff;
-  --text:#18334d;
-  --muted:#71849a;
-  --border:#dce7f1;
-  --soft:#f1f7fc;
-  --success:#13875b;
-  --danger:#d94343;
-  --shadow:0 8px 28px rgba(22,63,101,.07);
-}
-body.dark{
-  --bg:#0b1522;
-  --surface:#142235;
-  --text:#edf5ff;
-  --muted:#9aadc3;
-  --border:#2a3c51;
-  --soft:#1c3047;
-  --shadow:0 8px 28px rgba(0,0,0,.15);
-}
+:root{--p:#01497c;--b:#0878e8;--bg:#e6f0f8;--s:#fff;--t:#18334d;--m:#71849a;--l:#dce7f1;--soft:#f1f7fc}
 *{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:Inter,Arial,sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  transition:background .2s,color .2s;
-}
-button,input,select{font:inherit}
+body{margin:0;font:15px Arial,sans-serif;background:var(--bg);color:var(--t)}
+body.dark{--bg:#0b1522;--s:#142235;--t:#edf5ff;--m:#9aadc3;--l:#2a3c51;--soft:#1c3047}
+button,input{font:inherit}
 button{cursor:pointer}
-button:focus-visible,input:focus-visible,select:focus-visible{
-  outline:3px solid #57a7ff;
-  outline-offset:2px;
-}
-.topbar{
-  height:68px;
-  padding:0 26px;
-  background:var(--primary);
-  color:white;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  position:sticky;
-  top:0;
-  z-index:20;
-  box-shadow:0 4px 18px #002e501a;
-}
-.brand{display:flex;align-items:center;gap:11px;font-weight:800;font-size:22px}
-.logo{
-  width:39px;height:39px;
-  border-radius:12px;
-  background:white;color:var(--primary);
-  display:grid;place-items:center;font-size:23px;
-}
-.brand small{
-  font-size:11px;
-  font-weight:600;
-  background:#ffffff20;
-  border:1px solid #ffffff40;
-  padding:4px 7px;
-  border-radius:6px;
-}
-.header-actions{display:flex;gap:9px;align-items:center}
-.header-btn{
-  padding:9px 13px;border-radius:9px;
-  border:1px solid #ffffff65;
-  color:white;background:transparent;
-}
-.header-btn.primary{background:white;color:var(--primary);font-weight:700}
-.layout{display:grid;grid-template-columns:235px minmax(0,1fr);min-height:calc(100vh - 68px)}
-.sidebar{
-  background:var(--surface);
-  border-right:1px solid var(--border);
-  padding:22px 14px;
-  display:flex;flex-direction:column;
-}
-.nav-caption{
-  font-size:10px;font-weight:800;letter-spacing:1.2px;
-  color:var(--muted);padding:10px 12px;
-}
-.nav-item{
-  display:flex;align-items:center;gap:12px;
-  width:100%;padding:12px 13px;margin:3px 0;
-  border:0;border-radius:10px;background:transparent;
-  color:var(--muted);font-size:13px;font-weight:600;text-align:left;
-}
-.nav-item:hover,.nav-item.active{background:var(--soft);color:var(--blue)}
-.nav-icon{width:22px;text-align:center;font-size:17px}
-.sidebar-spacer{flex:1;min-height:30px}
-.sidebar-user{
-  display:flex;align-items:center;gap:10px;
-  padding:13px 7px 3px;border-top:1px solid var(--border);
-  margin-top:15px;
-}
-.avatar{
-  width:38px;height:38px;border-radius:50%;
-  display:grid;place-items:center;
-  background:#d8eaff;color:var(--primary);font-weight:800;
-  flex-shrink:0;
-}
-.user-name{font-size:12px;font-weight:700}
-.user-email{font-size:10px;color:var(--muted);margin-top:4px;overflow-wrap:anywhere}
-main{max-width:1450px;width:100%;margin:auto;padding:30px}
-.page{display:none;animation:fade .18s ease}
+.top{background:var(--p);color:white;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0}
+.brand{font-size:22px;font-weight:bold}
+.top button{padding:9px 12px;border-radius:8px;border:1px solid #ffffff70;background:transparent;color:white}
+.top .primary{background:white;color:var(--p)}
+.layout{display:grid;grid-template-columns:210px 1fr;min-height:calc(100vh - 55px)}
+aside{background:var(--s);padding:16px;border-right:1px solid var(--l)}
+.nav{display:block;width:100%;text-align:left;padding:12px;border:0;background:transparent;color:var(--m);border-radius:8px;margin:3px 0}
+.nav.active,.nav:hover{background:var(--soft);color:var(--b)}
+main{max-width:1200px;width:100%;margin:auto;padding:26px}
+.page{display:none}
 .page.active{display:block}
-@keyframes fade{from{opacity:.5;transform:translateY(3px)}to{opacity:1;transform:none}}
-h1{font-size:27px;margin:8px 0 10px;letter-spacing:-.5px}
-h2{font-size:18px;margin:0 0 8px}
-h3{font-size:15px;margin:0 0 8px}
-p{line-height:1.65}
-.muted{color:var(--muted)}
-.small{font-size:12px}
-.eyebrow{font-size:11px;font-weight:800;letter-spacing:1.4px;color:var(--blue)}
-.page-description{font-size:14px;color:var(--muted);margin-top:0}
-.hero{
-  padding:32px;
-  color:white;border-radius:20px;
-  background:linear-gradient(120deg,#01497c,#0878e8);
-  position:relative;overflow:hidden;
-  box-shadow:var(--shadow);
-}
-.hero:after{
-  content:"▶";position:absolute;right:35px;top:-15px;
-  font-size:145px;color:white;opacity:.08;transform:rotate(-9deg);
-  pointer-events:none;
-}
-.hero .eyebrow{color:#bde1ff}
-.hero h1{font-size:clamp(27px,4vw,39px);max-width:600px}
-.hero p{color:#e1efff;max-width:560px;font-size:14px}
-.hero .btn{position:relative;z-index:1;background:white;color:var(--primary)}
-.section-heading{
-  display:flex;align-items:center;justify-content:space-between;
-  gap:12px;margin:28px 0 15px;
-}
-.section-heading h2{margin:0}
-.grid{display:grid;gap:16px}
-.stats{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:20px}
-.card,.stat{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:15px;padding:20px;box-shadow:var(--shadow);
-}
-.stat-top{display:flex;justify-content:space-between;align-items:center}
-.stat-icon{
-  width:43px;height:43px;border-radius:12px;
-  display:grid;place-items:center;background:var(--soft);font-size:21px;
-}
-.stat-number{font-size:27px;font-weight:800;margin:17px 0 5px}
-.stat-label{font-size:12px;color:var(--muted)}
-.features{grid-template-columns:repeat(3,minmax(0,1fr))}
-.feature-icon{font-size:26px;margin-bottom:12px}
-.feature p{font-size:12px;color:var(--muted);margin-bottom:0}
-.card{margin-top:16px}
-.card-description{font-size:13px;color:var(--muted);margin:0 0 16px}
-.btn{
-  min-height:43px;padding:11px 16px;
-  border:0;border-radius:9px;background:var(--blue);
-  color:white;font-weight:700;font-size:13px;
-}
-.btn:hover{filter:brightness(1.06)}
-.btn-secondary{
-  background:var(--soft);color:var(--primary);
-  border:1px solid var(--border);
-}
-body.dark .btn-secondary{color:#b8ddff}
-.btn-danger{background:#fff0f0;color:var(--danger);border:1px solid #ffd8d8}
-body.dark .btn-danger{background:#3c222a;color:#ffb2b2;border-color:#60313a}
-.btn-small{min-height:32px;padding:7px 10px;font-size:11px}
-.btn-full{width:100%;margin-top:17px}
-.label{display:block;font-size:12px;font-weight:700;margin:17px 0 8px}
-.input,select{
-  width:100%;min-height:44px;padding:11px 12px;
-  border:1px solid var(--border);border-radius:9px;
-  background:var(--surface);color:var(--text);
-}
-.input:focus,select:focus{border-color:var(--blue);outline:none}
-.input-row{display:flex;gap:9px}
-.input-row .input{flex:1;min-width:0}
-.notice{
-  display:none;padding:12px 14px;margin-top:14px;
-  border-radius:9px;background:var(--soft);
-  border:1px solid var(--border);font-size:12px;line-height:1.6;
-}
+h1{font-size:28px;margin:8px 0}
+h2{font-size:19px}
+.muted,.desc{color:var(--m);line-height:1.6}
+.hero{padding:30px;border-radius:18px;color:white;background:linear-gradient(120deg,#01497c,#0878e8)}
+.hero p{max-width:600px}
+.card,.stat{background:var(--s);border:1px solid var(--l);border-radius:14px;padding:20px;margin-top:16px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
+.stat strong{display:block;font-size:25px;margin:12px 0}
+.btn{border:0;background:var(--b);color:white;padding:12px 16px;border-radius:8px;font-weight:bold}
+.secondary{background:var(--soft);color:var(--t);border:1px solid var(--l)}
+.full{width:100%;margin-top:17px}
+.form{max-width:460px;margin:24px auto}
+.form h1{text-align:center}
+.label{display:block;font-size:13px;font-weight:bold;margin:15px 0 7px}
+.input{width:100%;padding:12px;border:1px solid var(--l);border-radius:8px;background:var(--s);color:var(--t)}
+.notice{display:none;margin-top:14px;padding:12px;background:var(--soft);border:1px solid var(--l);border-radius:8px;line-height:1.5;overflow-wrap:anywhere}
 .notice.show{display:block}
-.result{display:none;margin-top:18px}
-.result.show{display:block}
-.result-box{
-  border:1px solid var(--border);border-radius:12px;
-  padding:15px;background:var(--soft);
-}
-.result-row{
-  display:flex;justify-content:space-between;gap:15px;
-  padding:11px 0;border-bottom:1px solid var(--border);font-size:12px;
-}
-.result-row:last-child{border-bottom:0}
-.result-row span:last-child{text-align:right;overflow-wrap:anywhere}
-.pills{display:flex;flex-wrap:wrap;gap:8px;margin:15px 0}
-.pill{
-  border:1px solid var(--border);border-radius:8px;
-  padding:8px 12px;background:var(--surface);
-  color:var(--muted);font-size:12px;
-}
-.pill.active{background:var(--primary);color:white;border-color:var(--primary)}
-.progress-track{height:7px;background:var(--border);border-radius:99px;overflow:hidden}
-.progress-fill{height:100%;width:0;background:var(--blue);transition:width .3s}
-.table-wrap{overflow-x:auto}
-table{border-collapse:collapse;width:100%;font-size:12px}
-th,td{text-align:left;padding:13px 10px;border-bottom:1px solid var(--border)}
-th{font-size:10px;color:var(--muted);font-weight:800;white-space:nowrap}
-td{overflow-wrap:anywhere}
-.badge{display:inline-block;border-radius:6px;padding:5px 8px;background:var(--soft);font-size:10px}
-.empty{text-align:center;padding:30px 10px;color:var(--muted);font-size:13px}
-.profile-header{display:flex;align-items:center;gap:14px}
-.profile-header .avatar{width:60px;height:60px;font-size:22px}
-.setting-row{
-  display:flex;justify-content:space-between;align-items:center;
-  gap:15px;padding:15px 0;border-bottom:1px solid var(--border);
-}
-.setting-row:last-child{border-bottom:0}
-.setting-title{font-size:13px;font-weight:700}
-.setting-description{font-size:11px;color:var(--muted);margin-top:5px}
-.switch{width:43px;height:24px;position:relative;flex-shrink:0}
-.switch input{opacity:0;width:0;height:0}
-.slider{position:absolute;inset:0;border-radius:20px;background:#aab8c7;transition:.2s}
-.slider:before{
-  content:"";position:absolute;width:18px;height:18px;left:3px;top:3px;
-  border-radius:50%;background:white;transition:.2s;
-}
-.switch input:checked + .slider{background:var(--blue)}
-.switch input:checked + .slider:before{transform:translateX(19px)}
-.form-card{max-width:470px;margin:24px auto;padding:28px}
-.form-logo{
-  width:54px;height:54px;border-radius:16px;background:var(--primary);
-  color:white;display:grid;place-items:center;font-size:28px;margin:0 auto 18px;
-}
-.form-card h1{text-align:center;font-size:25px}
-.form-card .page-description{text-align:center}
-.form-links{display:flex;justify-content:space-between;gap:10px;margin-top:13px;font-size:12px}
-.text-button{border:0;background:transparent;color:var(--blue);font-weight:700;padding:4px}
-.form-footer{text-align:center;font-size:12px;color:var(--muted);margin-top:19px}
-.help-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-.help-item{display:flex;gap:13px;align-items:flex-start;padding:17px 0;border-bottom:1px solid var(--border)}
-.help-icon{width:39px;height:39px;flex-shrink:0;border-radius:11px;background:var(--soft);display:grid;place-items:center;font-size:19px}
-footer{border-top:1px solid var(--border);margin-top:34px;padding:20px 0;text-align:center;color:var(--muted);font-size:11px}
-.mobile-nav{display:none}
-@media(max-width:1000px){
-  main{padding:23px}
-  .layout{grid-template-columns:210px minmax(0,1fr)}
-  .features{grid-template-columns:repeat(2,minmax(0,1fr))}
-}
-@media(max-width:760px){
-  .topbar{height:60px;padding:0 14px}
-  .brand{font-size:19px;gap:8px}
-  .logo{width:34px;height:34px}
-  .brand small{font-size:9px}
-  .header-actions{gap:5px}
-  .header-btn{font-size:11px;padding:8px}
-  .layout{display:block;min-height:calc(100vh - 60px)}
-  .sidebar{display:none}
-  main{padding:19px 14px 100px}
-  .hero{padding:24px 20px;border-radius:16px}
-  .hero:after{right:5px;top:5px;font-size:80px}
-  .hero p{font-size:13px;max-width:90%}
-  h1{font-size:24px}
-  .stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-  .stat{padding:15px}
-  .stat-number{font-size:23px}
-  .stat-icon{width:37px;height:37px}
-  .features{grid-template-columns:1fr}
-  .card{padding:16px}
-  .input-row{flex-direction:column}
-  .input-row .btn{width:100%}
-  .mobile-nav{
-    display:flex;position:fixed;bottom:0;left:0;right:0;
-    padding:8px 3px calc(8px + env(safe-area-inset-bottom));
-    background:var(--surface);border-top:1px solid var(--border);
-    justify-content:space-around;z-index:30;
-  }
-  .mobile-nav button{
-    flex:1;min-width:0;border:0;background:transparent;color:var(--muted);
-    display:flex;align-items:center;flex-direction:column;gap:4px;
-    font-size:10px;padding:4px 0;
-  }
-  .mobile-nav button.active{color:var(--blue);font-weight:800}
-  .mobile-nav .nav-icon{font-size:20px}
-  .help-grid{grid-template-columns:1fr}
-  .form-card{padding:23px 18px}
-}
-@media(max-width:390px){
-  .header-btn{padding:7px 8px}
-  .brand{font-size:17px}
-  .brand small{display:none}
-  .stats{grid-template-columns:1fr 1fr}
-  .stat-label{font-size:11px}
-  .setting-row{align-items:flex-start}
+.foot{text-align:center;color:var(--m);padding:24px;font-size:12px}
+.hidden{display:none!important}
+table{width:100%;border-collapse:collapse;font-size:13px}
+td,th{text-align:left;padding:10px;border-bottom:1px solid var(--l)}
+.mobile{display:none}
+.linkbtn{border:0;background:transparent;color:var(--b);cursor:pointer}
+@media(max-width:720px){
+.layout{display:block}
+aside{display:none}
+main{padding:14px 12px 82px}
+.top{padding:12px}
+.brand{font-size:18px}
+.top button{font-size:11px;padding:8px}
+.stats{grid-template-columns:1fr 1fr}
+.card,.stat{padding:15px}
+.mobile{display:flex;position:fixed;bottom:0;left:0;right:0;background:var(--s);border-top:1px solid var(--l);justify-content:space-around;padding:8px 0}
+.mobile button{border:0;background:transparent;color:var(--m);font-size:10px}
+.mobile button.active{color:var(--b)}
 }
 </style>
 </head>
-
 <body>
-<header class="topbar">
-  <div class="brand">
-    <div class="logo">▶</div>
-    <span>VibNest</span>
-    <small>User</small>
-  </div>
-  <div class="header-actions">
-    <button class="header-btn" id="themeButton" aria-label="Đổi giao diện">🌙</button>
-    <button class="header-btn" onclick="showPage('login')">Đăng nhập</button>
-    <button class="header-btn primary" onclick="showPage('register')">Đăng ký</button>
+
+<header class="top">
+  <div class="brand">▶ VibNest <small>User</small></div>
+  <div>
+    <button id="theme">🌙</button>
+    <button id="loginHead" onclick="showPage('login')">Đăng nhập</button>
+    <button id="registerHead" class="primary" onclick="showPage('register')">Đăng ký</button>
+    <button id="accountHead" class="primary hidden" onclick="showPage('account')">Tài khoản</button>
   </div>
 </header>
 
 <div class="layout">
-<aside class="sidebar">
-  <div class="nav-caption">KHÔNG GIAN CỦA BẠN</div>
-  <button class="nav-item active" data-page="home" onclick="showPage('home')"><span class="nav-icon">⌂</span>Trang chủ</button>
-  <button class="nav-item" data-page="download" onclick="showPage('download')"><span class="nav-icon">⇩</span>Tải video</button>
-  <button class="nav-item" data-page="history" onclick="showPage('history')"><span class="nav-icon">◷</span>Lịch sử tải</button>
-  <button class="nav-item" data-page="account" onclick="showPage('account')"><span class="nav-icon">♙</span>Tài khoản</button>
-  <div class="nav-caption" style="margin-top:20px">HỆ THỐNG</div>
-  <button class="nav-item" data-page="settings" onclick="showPage('settings')"><span class="nav-icon">⚙</span>Cài đặt</button>
-  <button class="nav-item" data-page="help" onclick="showPage('help')"><span class="nav-icon">ⓘ</span>Trợ giúp</button>
-  <div class="sidebar-spacer"></div>
-  <div class="sidebar-user">
-    <div class="avatar" id="sidebarAvatar">V</div>
-    <div><div class="user-name" id="sidebarName">Khách truy cập</div><div class="user-email">VibNest User</div></div>
-  </div>
+<aside>
+  <button class="nav active" data-page="home" onclick="showPage('home')">⌂ Trang chủ</button>
+  <button class="nav" data-page="download" onclick="showPage('download')">⇩ Tải video</button>
+  <button class="nav" data-page="history" onclick="showPage('history')">◷ Lịch sử</button>
+  <button class="nav" data-page="account" onclick="showPage('account')">♙ Tài khoản</button>
+  <button class="nav" data-page="settings" onclick="showPage('settings')">⚙ Cài đặt</button>
+  <button class="nav" data-page="help" onclick="showPage('help')">ⓘ Trợ giúp</button>
+  <hr>
+  <b id="sideName">Khách truy cập</b>
+  <p id="sideEmail" class="muted">Chưa đăng nhập</p>
 </aside>
 
 <main>
-<!-- HOME -->
+
 <section class="page active" id="home">
   <div class="hero">
-    <div class="eyebrow">CHÀO MỪNG ĐẾN VỚI VIBNEST</div>
+    <small>CHÀO MỪNG ĐẾN VỚI VIBNEST</small>
     <h1>Video của bạn.<br>Không gian của bạn.</h1>
-    <p>Quản lý các liên kết video trong một không gian hiện đại, gọn gàng và dễ sử dụng trên mọi thiết bị.</p>
-    <button class="btn" onclick="showPage('download')">Bắt đầu ngay&nbsp; →</button>
+    <p>Quản lý liên kết video trong không gian hiện đại, gọn gàng và dễ sử dụng trên mọi thiết bị.</p>
+    <button class="btn secondary" onclick="showPage('download')">Bắt đầu ngay →</button>
   </div>
 
-  <div class="grid stats">
-    <div class="stat">
-      <div class="stat-top"><span class="muted small">Liên kết đã ghi nhận</span><span class="stat-icon">🔗</span></div>
-      <div class="stat-number" id="statLinks">0</div><div class="stat-label">Trong trình duyệt này</div>
-    </div>
-    <div class="stat">
-      <div class="stat-top"><span class="muted small">Tệp đã tải</span><span class="stat-icon">📥</span></div>
-      <div class="stat-number">0</div><div class="stat-label">Chưa kết nối dịch vụ tải</div>
-    </div>
-    <div class="stat">
-      <div class="stat-top"><span class="muted small">Tài khoản</span><span class="stat-icon">👤</span></div>
-      <div class="stat-number" id="statAccount" style="font-size:20px">Khách</div><div class="stat-label">Chế độ khách</div>
-    </div>
+  <div class="stats">
+    <div class="stat">Liên kết đã ghi nhận<strong id="statLinks">0</strong><small class="muted">Trên trình duyệt này</small></div>
+    <div class="stat">Tệp đã tải<strong>0</strong><small class="muted">API tải video chưa kết nối</small></div>
+    <div class="stat">Tài khoản<strong id="statUser">Khách</strong><small id="statStatus" class="muted">Chế độ khách</small></div>
   </div>
 
-  <div class="section-heading"><h2>Khám phá VibNest</h2><span class="muted small">Đơn giản · Hiện đại</span></div>
-  <div class="grid features">
-    <div class="card">
-      <div class="feature-icon">⚡</div><h3>Thao tác nhanh</h3>
-      <p>Nhập liên kết và kiểm tra định dạng ngay trên giao diện.</p>
-    </div>
-    <div class="card">
-      <div class="feature-icon">📂</div><h3>Lịch sử tập trung</h3>
-      <p>Xem lại các liên kết đã ghi nhận trong trình duyệt.</p>
-    </div>
-    <div class="card">
-      <div class="feature-icon">📱</div><h3>Tối ưu đa thiết bị</h3>
-      <p>Bố cục thích ứng với màn hình máy tính và điện thoại.</p>
-    </div>
+  <div class="card">
+    <h2>Khám phá VibNest</h2>
+    <p class="desc">⚡ Thao tác nhanh · 📂 Lịch sử tập trung · 📱 Tối ưu cho điện thoại và máy tính.</p>
   </div>
 </section>
 
-<!-- DOWNLOAD -->
 <section class="page" id="download">
-  <div class="eyebrow">CÔNG CỤ VIDEO</div>
   <h1>Tải video</h1>
-  <p class="page-description">Nhập đường dẫn video mà bạn có quyền lưu xuống thiết bị.</p>
+  <p class="desc">Nhập đường dẫn video bạn có quyền lưu xuống thiết bị.</p>
   <div class="card">
-    <h2>🔗 Nhập liên kết</h2>
-    <p class="card-description">Hãy dán URL video vào ô bên dưới để kiểm tra định dạng.</p>
     <form id="urlForm">
       <label class="label" for="videoUrl">Đường dẫn video</label>
-      <div class="input-row">
-        <input class="input" id="videoUrl" type="url" placeholder="https://example.com/video" required>
-        <button class="btn" type="submit">Kiểm tra URL</button>
-      </div>
+      <input class="input" id="videoUrl" type="url" placeholder="https://example.com/video" required>
+      <button class="btn full">Kiểm tra URL</button>
     </form>
-    <div class="notice" id="urlNotice" role="status"></div>
-    <div class="result" id="urlResult">
-      <div class="result-box">
-        <h3>Thông tin liên kết</h3>
-        <div class="result-row"><span class="muted">Tên miền</span><span id="urlHost"></span></div>
-        <div class="result-row"><span class="muted">Giao thức</span><span id="urlProtocol"></span></div>
-        <p class="small muted">Đây mới là bước kiểm tra URL. Chưa có thông tin tiêu đề, chất lượng hoặc tệp video từ máy chủ.</p>
-      </div>
-    </div>
+    <div id="urlNotice" class="notice" role="status"></div>
+    <div id="urlResult" class="notice"></div>
   </div>
   <div class="card">
-    <h2>📌 Về chức năng tải video</h2>
-    <p class="card-description">Để phân tích video, chọn độ phân giải và tải tệp thực tế, VibNest cần kết nối API backend. Chỉ tải nội dung bạn có quyền lưu và tuân thủ điều khoản của nền tảng nguồn.</p>
-    <div class="badge">Backend: Chưa kết nối</div>
+    <b>Backend tải video: Chưa kết nối</b>
+    <p class="desc">Cần API backend để phân tích và tải tệp thực tế.</p>
   </div>
 </section>
 
-<!-- HISTORY -->
 <section class="page" id="history">
-  <div class="eyebrow">THƯ VIỆN CỦA BẠN</div>
-  <h1>Lịch sử tải</h1>
-  <p class="page-description">Quản lý những liên kết đã được ghi nhận trên trình duyệt hiện tại.</p>
+  <h1>Lịch sử liên kết</h1>
   <div class="card">
-    <div class="section-heading" style="margin-top:0">
-      <h2>Danh sách liên kết</h2>
-      <button class="btn btn-secondary btn-small" onclick="clearHistory()">Xóa lịch sử</button>
-    </div>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>Địa chỉ</th><th>Thời gian</th><th>Trạng thái</th><th></th></tr></thead>
-        <tbody id="historyTable"></tbody>
-      </table>
-    </div>
-    <div class="empty" id="emptyHistory">📂<p>Chưa có liên kết nào.</p><button class="btn btn-secondary" onclick="showPage('download')">Nhập liên kết</button></div>
+    <table>
+      <thead><tr><th>Tên miền</th><th>Thời gian</th><th></th></tr></thead>
+      <tbody id="historyRows"></tbody>
+    </table>
+    <p id="historyEmpty" class="muted">Chưa có liên kết nào.</p>
+    <button class="btn secondary" onclick="clearHistory()">Xóa lịch sử</button>
   </div>
 </section>
 
-<!-- ACCOUNT -->
 <section class="page" id="account">
-  <div class="eyebrow">HỒ SƠ CÁ NHÂN</div>
-  <h1>Tài khoản của bạn</h1>
-  <p class="page-description">Thông tin hồ sơ và trạng thái sử dụng.</p>
+  <h1>Tài khoản</h1>
   <div class="card">
-    <div class="profile-header">
-      <div class="avatar" id="profileAvatar">V</div>
-      <div><h2 id="profileName">Khách truy cập</h2><p class="muted small" id="profileEmail">Chưa đăng nhập</p></div>
-    </div>
-    <div class="result-row"><span class="muted">Trạng thái</span><span id="profileStatus">Khách</span></div>
-    <div class="result-row"><span class="muted">Loại tài khoản</span><span>Chưa xác thực</span></div>
-    <p class="card-description" style="margin-top:15px">Hệ thống tài khoản thật sẽ được kết nối sau khi xây dựng backend bảo mật.</p>
-    <button class="btn" onclick="showPage('login')">Đăng nhập</button>
-    <button class="btn btn-secondary" onclick="showPage('register')">Tạo tài khoản</button>
+    <h2 id="profileName">Khách truy cập</h2>
+    <p id="profileEmail" class="desc">Chưa đăng nhập</p>
+    <p><b>Mã người dùng:</b> <span id="userId">—</span></p>
+    <p><b>Trạng thái:</b> <span id="authState">Chưa đăng nhập</span></p>
+    <button id="logoutBtn" class="btn hidden" onclick="logout()">Đăng xuất</button>
+    <button class="btn secondary" onclick="editName()">Đổi tên hiển thị</button>
+    <div id="accountNotice" class="notice"></div>
+  </div>
+  <div class="card">
+    <h2>Bảo mật</h2>
+    <p class="desc">Tài khoản được xác thực bởi Supabase Auth. Không chia sẻ mật khẩu hoặc khóa bí mật.</p>
+    <button class="btn secondary" onclick="showPage('forgot')">Khôi phục mật khẩu</button>
   </div>
 </section>
 
-<!-- SETTINGS -->
 <section class="page" id="settings">
-  <div class="eyebrow">CÁ NHÂN HÓA</div>
   <h1>Cài đặt</h1>
-  <p class="page-description">Tùy chỉnh trải nghiệm VibNest của bạn.</p>
-  <div class="card">
-    <h2>Giao diện</h2>
-    <div class="setting-row">
-      <div><div class="setting-title">Chế độ tối</div><div class="setting-description">Giảm độ sáng của giao diện.</div></div>
-      <label class="switch"><input type="checkbox" id="darkSwitch"><span class="slider"></span></label>
-    </div>
-    <label class="label" for="language">Ngôn ngữ</label>
-    <select id="language"><option value="vi">Tiếng Việt</option><option value="en">English (chưa dịch đầy đủ)</option></select>
-    <p class="small muted">Lựa chọn ngôn ngữ hiện được lưu nhưng chưa dịch toàn bộ giao diện.</p>
-  </div>
-  <div class="card">
-    <h2>Thông tin ứng dụng</h2>
-    <div class="result-row"><span class="muted">Tên</span><span>VibNest User</span></div>
-    <div class="result-row"><span class="muted">Phiên bản giao diện</span><span>1.1.0</span></div>
-    <div class="result-row"><span class="muted">Backend</span><span>Chưa kết nối</span></div>
-    <div class="result-row"><span class="muted">Ứng dụng Android</span><span>Chưa phát hành</span></div>
-  </div>
+  <div class="card"><h2>Giao diện</h2><button class="btn secondary" onclick="toggleTheme()">Đổi sáng/tối</button></div>
+  <div class="card"><h2>Trạng thái hệ thống</h2><p class="desc">Xác thực: Supabase Auth. Tải video: cần API riêng.</p></div>
 </section>
 
-<!-- HELP -->
 <section class="page" id="help">
-  <div class="eyebrow">HỖ TRỢ NGƯỜI DÙNG</div>
   <h1>Trợ giúp</h1>
-  <p class="page-description">Thông tin hướng dẫn sử dụng VibNest.</p>
-  <div class="grid help-grid">
-    <div class="card">
-      <div class="help-item"><div class="help-icon">📘</div><div><h3>Hướng dẫn sử dụng</h3><p class="small muted">Nhập liên kết hợp lệ để kiểm tra URL. Tính năng tải video thật sẽ được bổ sung sau.</p></div></div>
-      <div class="help-item"><div class="help-icon">🔐</div><div><h3>Tài khoản</h3><p class="small muted">Đăng nhập và đăng ký hiện là giao diện mẫu, chưa xác thực tài khoản.</p></div></div>
-    </div>
-    <div class="card">
-      <div class="help-item"><div class="help-icon">🛡️</div><div><h3>Bảo mật</h3><p class="small muted">Không nhập mật khẩu thật vào biểu mẫu cho đến khi hệ thống xác thực được triển khai.</p></div></div>
-      <div class="help-item"><div class="help-icon">🌐</div><div><h3>Khả năng tương thích</h3><p class="small muted">Website được thiết kế responsive cho trình duyệt máy tính và điện thoại.</p></div></div>
-    </div>
-  </div>
+  <div class="card"><h2>Đăng ký và đăng nhập</h2><p class="desc">Dùng email và mật khẩu. Nếu bật xác minh email trong Supabase, hãy mở email xác minh trước khi đăng nhập.</p></div>
+  <div class="card"><h2>Quyền riêng tư</h2><p class="desc">Mật khẩu được xử lý bởi Supabase Auth, không lưu trong localStorage của website.</p></div>
 </section>
 
-<!-- LOGIN -->
 <section class="page" id="login">
-  <div class="card form-card">
-    <div class="form-logo">▶</div>
+  <div class="card form">
     <h1>Chào mừng trở lại</h1>
-    <p class="page-description">Đăng nhập vào VibNest User</p>
+    <p class="desc">Đăng nhập vào VibNest</p>
     <form id="loginForm">
       <label class="label" for="loginEmail">Email</label>
-      <input class="input" id="loginEmail" type="email" autocomplete="email" placeholder="ban@example.com" required>
+      <input class="input" id="loginEmail" type="email" autocomplete="email" required placeholder="ban@example.com">
       <label class="label" for="loginPassword">Mật khẩu</label>
-      <input class="input" id="loginPassword" type="password" autocomplete="current-password" placeholder="Nhập mật khẩu" required>
-      <div class="form-links"><label><input type="checkbox" id="rememberMe"> Ghi nhớ đăng nhập</label><button type="button" class="text-button" onclick="showPage('forgot')">Quên mật khẩu?</button></div>
-      <button class="btn btn-full" type="submit">Đăng nhập</button>
+      <input class="input" id="loginPassword" type="password" autocomplete="current-password" required>
+      <p style="text-align:right"><button type="button" class="linkbtn" onclick="showPage('forgot')">Quên mật khẩu?</button></p>
+      <button class="btn full">Đăng nhập</button>
     </form>
     <div class="notice" id="loginNotice" role="status"></div>
-    <div class="form-footer">Chưa có tài khoản? <button class="text-button" onclick="showPage('register')">Đăng ký ngay</button></div>
-    <p class="small muted">Biểu mẫu chưa kết nối máy chủ xác thực. Không nhập mật khẩu thật.</p>
+    <p class="foot">Chưa có tài khoản? <button class="linkbtn" onclick="showPage('register')">Đăng ký ngay</button></p>
   </div>
 </section>
 
-<!-- REGISTER -->
 <section class="page" id="register">
-  <div class="card form-card">
-    <div class="form-logo">▶</div>
+  <div class="card form">
     <h1>Tạo tài khoản</h1>
-    <p class="page-description">Bắt đầu trải nghiệm VibNest</p>
+    <p class="desc">Bắt đầu trải nghiệm VibNest</p>
     <form id="registerForm">
       <label class="label" for="registerName">Tên hiển thị</label>
-      <input class="input" id="registerName" autocomplete="name" placeholder="Tên của bạn" required>
+      <input class="input" id="registerName" maxlength="60" required placeholder="Tên của bạn">
       <label class="label" for="registerEmail">Email</label>
-      <input class="input" id="registerEmail" type="email" autocomplete="email" placeholder="ban@example.com" required>
+      <input class="input" id="registerEmail" type="email" autocomplete="email" required placeholder="ban@example.com">
       <label class="label" for="registerPassword">Mật khẩu</label>
-      <input class="input" id="registerPassword" type="password" minlength="8" autocomplete="new-password" placeholder="Ít nhất 8 ký tự" required>
+      <input class="input" id="registerPassword" type="password" minlength="8" autocomplete="new-password" required placeholder="Ít nhất 8 ký tự">
       <label class="label" for="registerConfirm">Xác nhận mật khẩu</label>
       <input class="input" id="registerConfirm" type="password" minlength="8" autocomplete="new-password" required>
-      <button class="btn btn-full" type="submit">Tạo tài khoản</button>
+      <button class="btn full">Tạo tài khoản</button>
     </form>
     <div class="notice" id="registerNotice" role="status"></div>
-    <div class="form-footer">Đã có tài khoản? <button class="text-button" onclick="showPage('login')">Đăng nhập</button></div>
-    <p class="small muted">Chưa có dữ liệu nào được gửi đến máy chủ hoặc tài khoản nào được tạo.</p>
+    <p class="foot">Đã có tài khoản? <button class="linkbtn" onclick="showPage('login')">Đăng nhập</button></p>
   </div>
 </section>
 
-<!-- FORGOT -->
 <section class="page" id="forgot">
-  <div class="card form-card">
-    <div class="form-logo">✉</div>
+  <div class="card form">
     <h1>Quên mật khẩu?</h1>
-    // ===== ĐĂNG KÝ TÀI KHOẢN VIBNEST =====
-$('registerForm').addEventListener('submit', async e => {
-  e.preventDefault();
-
-  const name = $('registerName').value.trim();
-  const email = $('registerEmail').value.trim();
-  const password = $('registerPassword').value;
-  const confirm = $('registerConfirm').value;
-
-  if (password !== confirm) {
-    notice('registerNotice', 'Mật khẩu xác nhận không khớp.');
-    return;
-  }
-
-  if (password.length < 8) {
-    notice('registerNotice', 'Mật khẩu phải có ít nhất 8 ký tự.');
-    return;
-  }
-
-  const button = $('registerForm').querySelector(
-    'button[type="submit"]'
-  );
-
-  button.disabled = true;
-  button.textContent = 'Đang tạo tài khoản...';
-
-  try {
-    const { data, error } = await supabaseClient.auth.signUp({
-      email: email,
-      password: password,
-      options: {
-        data: {
-          display_name: name
-        },
-        emailRedirectTo: window.location.origin +
-          window.location.pathname
-      }
-    });
-
-    if (error) throw error;
-
-    if (data.user && !data.session) {
-      notice(
-        'registerNotice',
-        'Đăng ký thành công! Hãy kiểm tra email để xác minh tài khoản trước khi đăng nhập.'
-      );
-    } else if (data.user) {
-      notice(
-        'registerNotice',
-        'Tạo tài khoản thành công! Chào mừng bạn đến với VibNest.'
-      );
-    } else {
-      notice(
-        'registerNotice',
-        'Chưa nhận được phản hồi. Vui lòng thử lại.'
-      );
-    }
-
-    $('registerPassword').value = '';
-    $('registerConfirm').value = '';
-
-  } catch (error) {
-    console.error('VibNest registration error:', error);
-
-    const message = error.message || '';
-
-    if (message.includes('already registered')) {
-      notice('registerNotice', 'Email này đã được đăng ký.');
-    } else if (message.includes('Password')) {
-      notice('registerNotice', 'Mật khẩu chưa đáp ứng yêu cầu của hệ thống.');
-    } else {
-      notice(
-        'registerNotice',
-        'Không thể đăng ký. Hãy kiểm tra kết nối Supabase và thử lại.'
-      );
-    }
-  } finally {
-    button.disabled = false;
-    button.textContent = 'Tạo tài khoản';
-  }
-});
-    <p class="page-description">Khôi phục quyền truy cập tài khoản VibNest.</p>
+    <p class="desc">Nhập email để nhận liên kết khôi phục.</p>
     <form id="forgotForm">
       <label class="label" for="forgotEmail">Email tài khoản</label>
-      <input class="input" id="forgotEmail" type="email" autocomplete="email" placeholder="ban@example.com" required>
-      <button class="btn btn-full" type="submit">Gửi yêu cầu</button>
+      <input class="input" id="forgotEmail" type="email" required placeholder="ban@example.com">
+      <button class="btn full">Gửi email khôi phục</button>
     </form>
     <div class="notice" id="forgotNotice" role="status"></div>
-    <div class="form-footer"><button class="text-button" onclick="showPage('login')">← Quay lại đăng nhập</button></div>
-    <p class="small muted">Gửi email khôi phục thật cần dịch vụ backend và email.</p>
+    <p class="foot"><button class="linkbtn" onclick="showPage('login')">← Quay lại đăng nhập</button></p>
   </div>
 </section>
 
-<footer>© 2026 VibNest User · Kết nối đam mê, lưu giữ khoảnh khắc.</footer>
+<div class="foot">© 2026 VibNest User · Kết nối đam mê, lưu giữ khoảnh khắc.</div>
 </main>
 </div>
 
-<nav class="mobile-nav" aria-label="Điều hướng chính">
-  <button class="active" data-page="home" onclick="showPage('home')"><span class="nav-icon">⌂</span>Trang chủ</button>
-  <button data-page="download" onclick="showPage('download')"><span class="nav-icon">⇩</span>Tải video</button>
-  <button data-page="history" onclick="showPage('history')"><span class="nav-icon">◷</span>Lịch sử</button>
-  <button data-page="account" onclick="showPage('account')"><span class="nav-icon">♙</span>Tài khoản</button>
-  <button data-page="settings" onclick="showPage('settings')"><span class="nav-icon">⚙</span>Cài đặt</button>
-</nav>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<nav class="mobile">
+  <button data-page="home" onclick="showPage('home')">⌂<br>Trang chủ</button>
+  <button data-page="download" onclick="showPage('download')">⇩<br>Tải video</button>
+  <button data-page="history" onclick="showPage('history')">◷<br>Lịch sử</button>
+  <button data-page="account" onclick="showPage('account')">♙<br>Tài khoản</button>
+  <button data-page="settings" onclick="showPage('settings')">⚙<br>Cài đặt</button><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL = 'https://xztwgjuherkqdvebkovz.supabase.co';
-const SUPABASE_PUBLISHABLE_KEY = sb_publishable_F5BitF69W3Tz1pPO-T-Y_A_TToc4t9n
+'use strict';
 
-const supabaseClient = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_PUBLISHABLE_KEY
-);
+const SUPABASE_URL='https://xztwgjuherkqdvebkovz.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY='sb_publishable_F5BitF69W3Tz1pPO-T-Y_A_TToc4t9n';
 
-const $ = id => document.getElementById(id);
+const supabaseClient=window.supabase
+  ?window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY)
+  :null;
+
+const $=id=>document.getElementById(id);
+let currentUser=null;
+let historyItems=[];
+
+try{
+  historyItems=JSON.parse(localStorage.getItem('vibnest_history')||'[]');
+  if(!Array.isArray(historyItems))historyItems=[];
+}catch(e){
+  historyItems=[];
+}
+
+function notify(id,msg,ok=false){
+  const el=$(id);
+  el.textContent=msg;
+  el.classList.add('show');
+  el.style.borderColor=ok?'#13875b':'var(--l)';
+}
+
+function clearNotify(id){
+  $(id).classList.remove('show');
+  $(id).textContent='';
+}
+
 function showPage(id){
-  document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));
-  document.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
+  document.querySelectorAll('.page').forEach(p=>{
+    p.classList.toggle('active',p.id===id);
+  });
+  document.querySelectorAll('[data-page]').forEach(b=>{
+    b.classList.toggle('active',b.dataset.page===id);
+  });
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-function notice(id,message){
-  const el=$(id);
-  el.textContent=message;
-  el.classList.add('show');
-}
-
-function safeGet(key,fallback){
-  try{
-    const value=localStorage.getItem(key);
-    return value===null?fallback:value;
-  }catch(e){return fallback}
-}
-function safeSet(key,value){
-  try{localStorage.setItem(key,value)}catch(e){}
-}
-
-// Theme
-function setTheme(dark){
-  document.body.classList.toggle('dark',dark);
-  $('darkSwitch').checked=dark;
-  $('themeButton').textContent=dark?'☀️':'🌙';
-  safeSet('vibnest_theme',dark?'dark':'light');
-}
-setTheme(safeGet('vibnest_theme','light')==='dark');
-$('themeButton').addEventListener('click',()=>setTheme(!document.body.classList.contains('dark')));
-$('darkSwitch').addEventListener('change',e=>setTheme(e.target.checked));
-
-// Language preference only; full translations are not implemented.
-$('language').value=safeGet('vibnest_language','vi');
-$('language').addEventListener('change',e=>safeSet('vibnest_language',e.target.value));
-
-// URL history
-let items=[];
-try{
-  const stored=JSON.parse(safeGet('vibnest_history','[]'));
-  if(Array.isArray(stored))items=stored;
-}catch(e){items=[]}
-
 function renderHistory(){
-  const body=$('historyTable');
-  body.replaceChildren();
-  $('emptyHistory').style.display=items.length?'none':'block';
+  const rows=$('historyRows');
+  rows.replaceChildren();
+  $('historyEmpty').classList.toggle('hidden',historyItems.length>0);
 
-  items.forEach((item,index)=>{
+  historyItems.forEach((item,i)=>{
     const tr=document.createElement('tr');
-    const host=document.createElement('td');host.textContent=item.host;
-    const date=document.createElement('td');date.textContent=item.date;
-    const status=document.createElement('td');
-    const badge=document.createElement('span');
-    badge.className='badge';badge.textContent='Đã kiểm tra URL';status.appendChild(badge);
-    const action=document.createElement('td');
-    const remove=document.createElement('button');
-    remove.className='text-button';remove.textContent='Xóa';
-    remove.addEventListener('click',()=>{
-      items.splice(index,1);saveItems();
-    });
-    action.appendChild(remove);
-    tr.append(host,date,status,action);body.appendChild(tr);
+    const a=document.createElement('td');
+    const b=document.createElement('td');
+    const c=document.createElement('td');
+    const del=document.createElement('button');
+
+    a.textContent=item.host;
+    b.textContent=item.date;
+    del.className='linkbtn';
+    del.textContent='Xóa';
+
+    del.onclick=()=>{
+      historyItems.splice(i,1);
+      saveHistory();
+    };
+
+    c.append(del);
+    tr.append(a,b,c);
+    rows.append(tr);
   });
-  $('statLinks').textContent=String(items.length);
+
+  $('statLinks').textContent=historyItems.length;
 }
-function saveItems(){
-  safeSet('vibnest_history',JSON.stringify(items));
+
+function saveHistory(){
+  try{
+    localStorage.setItem('vibnest_history',JSON.stringify(historyItems));
+  }catch(e){}
   renderHistory();
 }
+
 function clearHistory(){
-  if(!items.length)return;
-  if(confirm('Xóa toàn bộ lịch sử liên kết trên trình duyệt này?')){
-    items=[];saveItems();
+  if(confirm('Xóa lịch sử liên kết trên trình duyệt này?')){
+    historyItems=[];
+    saveHistory();
   }
 }
-renderHistory();
 
-$('urlForm').addEventListener('submit',e=>{
-  e.preventDefault();
-  $('urlNotice').classList.remove('show');
-  $('urlResult').classList.remove('show');
+function renderUser(){
+  const yes=!!currentUser;
+  const name=currentUser?.user_metadata?.display_name
+    ||currentUser?.email?.split('@')[0]
+    ||'Khách truy cập';
+  const email=currentUser?.email||'Chưa đăng nhập';
 
-  try{
-    const url=new URL($('videoUrl').value.trim());
-    if(!['http:','https:'].includes(url.protocol))throw new Error('protocol');
+  $('loginHead').classList.toggle('hidden',yes);
+  $('registerHead').classList.toggle('hidden',yes);
+  $('accountHead').classList.toggle('hidden',!yes);
 
-    $('urlHost').textContent=url.hostname;
-    $('urlProtocol').textContent=url.protocol.replace(':','').toUpperCase();
-    $('urlResult').classList.add('show');
-    notice('urlNotice','URL có định dạng hợp lệ. Chưa xác minh video tồn tại và chưa tải tệp.');
-    items.unshift({host:url.hostname,date:new Date().toLocaleString('vi-VN')});
-    items=items.slice(0,100);
-    saveItems();
-  }catch(err){
-    notice('urlNotice','Liên kết chưa hợp lệ. Hãy kiểm tra URL và thử lại.');
-  }
-});
+  $('sideName').textContent=name;
+  $('sideEmail').textContent=email;
+  $('profileName').textContent=name;
+  $('profileEmail').textContent=email;
+  $('statUser').textContent=yes?'Thành viên':'Khách';
+  $('statStatus').textContent=yes?'Đã đăng nhập':'Chế độ khách';
+  $('userId').textContent=currentUser?.id||'—';
+  $('authState').textContent=yes
+    ?'Đã đăng nhập bằng Supabase Auth'
+    :'Chưa đăng nhập';
 
-// ===== VIBNEST AUTH: SUPABASE =====
-
-function showAuthError(id, error) {
-  console.error('VibNest Auth:', error);
-
-  const messages = {
-    'Invalid login credentials':
-      'Email hoặc mật khẩu không chính xác.',
-    'Email not confirmed':
-      'Hãy xác minh email trước khi đăng nhập.',
-    'User already registered':
-      'Email này đã được đăng ký.'
-  };
-
-  notice(
-    id,
-    messages[error.message] ||
-      'Không thể thực hiện yêu cầu. Hãy kiểm tra thông tin và thử lại.'
-  );
+  $('logoutBtn').classList.toggle('hidden',!yes);
 }
 
-// ĐĂNG KÝ
-$('registerForm').addEventListener('submit', async e => {
+function authError(id,e){
+  let m=e?.message||'Có lỗi xảy ra. Vui lòng thử lại.';
+
+  if(/invalid login credentials/i.test(m))
+    m='Email hoặc mật khẩu không chính xác.';
+  else if(/user already registered/i.test(m))
+    m='Email này đã đăng ký. Hãy đăng nhập hoặc khôi phục mật khẩu.';
+  else if(/email not confirmed/i.test(m))
+    m='Email chưa được xác minh. Hãy kiểm tra hộp thư.';
+  else if(/password should be at least/i.test(m))
+    m='Mật khẩu chưa đủ độ dài.';
+
+  notify(id,m);
+}
+
+/* ĐĂNG KÝ */
+$('registerForm').addEventListener('submit',async e=>{
   e.preventDefault();
+  clearNotify('registerNotice');
 
-  const name = $('registerName').value.trim();
-  const email = $('registerEmail').value.trim();
-  const password = $('registerPassword').value;
-  const confirm = $('registerConfirm').value;
+  const name=$('registerName').value.trim();
+  const email=$('registerEmail').value.trim();
+  const password=$('registerPassword').value;
 
-  if (password !== confirm) {
-    notice('registerNotice', 'Mật khẩu xác nhận không khớp.');
+  if(password!==$('registerConfirm').value){
+    notify('registerNotice','Mật khẩu xác nhận không khớp.');
     return;
   }
 
-  const button = $('registerForm').querySelector('[type="submit"]');
-  button.disabled = true;
+  if(password.length<8){
+    notify('registerNotice','Mật khẩu cần có ít nhất 8 ký tự.');
+    return;
+  }
 
-  try {
-    const { data, error } = await supabaseClient.auth.signUp({
+  if(!supabaseClient){
+    notify('registerNotice','Không tải được Supabase. Kiểm tra kết nối mạng rồi tải lại.');
+    return;
+  }
+
+  const btn=$('registerForm').querySelector('button');
+  btn.disabled=true;
+  btn.textContent='Đang tạo tài khoản…';
+
+  try{
+    const {data,error}=await supabaseClient.auth.signUp({
       email,
       password,
-      options: {
-        data: { display_name: name }
+      options:{
+        data:{display_name:name},
+        emailRedirectTo:location.origin+location.pathname
       }
     });
 
-    if (error) throw error;
+    if(error)throw error;
 
-    notice(
-      'registerNotice',
-      data.session
-        ? 'Đăng ký thành công! Chào mừng đến với VibNest.'
-        : 'Đăng ký thành công! Hãy kiểm tra email để xác minh tài khoản.'
-    );
-  } catch (error) {
-    showAuthError('registerNotice', error);
-  } finally {
-    button.disabled = false;
+    if(data.session){
+      currentUser=data.user;
+      renderUser();
+      notify('registerNotice','Đăng ký thành công! Bạn đã đăng nhập.',true);
+    }else{
+      notify(
+        'registerNotice',
+        'Đã gửi yêu cầu đăng ký. Hãy mở email xác minh tài khoản rồi quay lại đăng nhập. Kiểm tra cả thư rác.',
+        true
+      );
+    }
+  }catch(err){
+    authError('registerNotice',err);
+  }finally{
+    btn.disabled=false;
+    btn.textContent='Tạo tài khoản';
   }
 });
 
-// ĐĂNG NHẬP
-$('loginForm').addEventListener('submit', async e => {
+/* ĐĂNG NHẬP */
+$('loginForm').addEventListener('submit',async e=>{
   e.preventDefault();
+  clearNotify('loginNotice');
 
-  const button = $('loginForm').querySelector('[type="submit"]');
-  button.disabled = true;
+  if(!supabaseClient){
+    notify('loginNotice','Không tải được Supabase. Kiểm tra mạng rồi tải lại trang.');
+    return;
+  }
 
-  try {
-    const { error } = await supabaseClient.auth.signInWithPassword({
-      email: $('loginEmail').value.trim(),
-      password: $('loginPassword').value
+  const btn=$('loginForm').querySelector('button');
+
+  btn.disabled=true;
+
+  try{
+    const {data,error}=await supabaseClient.auth.signInWithPassword({
+      email:$('loginEmail').value.trim(),
+      password:$('loginPassword').value
     });
 
-    if (error) throw error;
+    if(error)throw error;
 
-    notice('loginNotice', 'Đăng nhập thành công!');
-    await refreshAccount();
-    showPage('account');
-  } catch (error) {
-    showAuthError('loginNotice', error);
-  } finally {
-    button.disabled = false;
+    currentUser=data.user;
+    renderUser();
+
+    notify('loginNotice','Đăng nhập thành công. Chào mừng đến với VibNest!',true);
+
+    setTimeout(()=>showPage('account'),500);
+  }catch(err){
+    authError('loginNotice',err);
+  }finally{
+    btn.disabled=false;
   }
 });
 
-// CẬP NHẬT TÀI KHOẢN
-async function refreshAccount() {
-  const { data, error } = await supabaseClient.auth.getUser();
-
-  if (error || !data.user) {
-    updateGuestUI();
-    return;
-  }
-
-  const user = data.user;
-  const email = user.email || '';
-  const name = user.user_metadata?.display_name ||
-    email.split('@')[0] || 'Người dùng';
-
-  $('sidebarName').textContent = name;
-  $('sidebarAvatar').textContent = name.charAt(0).toUpperCase();
-  $('profileName').textContent = name;
-  $('profileEmail').textContent = email;
-  $('profileAvatar').textContent = name.charAt(0).toUpperCase();
-  $('profileStatus').textContent = 'Đã đăng nhập';
-  $('statAccount').textContent = 'Đã đăng nhập';
-}
-
-// TRẠNG THÁI KHÁCH
-function updateGuestUI() {
-  $('sidebarName').textContent = 'Khách truy cập';
-  $('sidebarAvatar').textContent = 'V';
-  $('profileName').textContent = 'Khách truy cập';
-  $('profileEmail').textContent = 'Chưa đăng nhập';
-  $('profileAvatar').textContent = 'V';
-  $('profileStatus').textContent = 'Khách';
-  $('statAccount').textContent = 'Khách';
-}
-
-// QUÊN MẬT KHẨU
-$('forgotForm').addEventListener('submit', async e => {
+/* QUÊN MẬT KHẨU */
+$('forgotForm').addEventListener('submit',async e=>{
   e.preventDefault();
+  clearNotify('forgotNotice');
 
-  try {
-    const { error } =
-      await supabaseClient.auth.resetPasswordForEmail(
-        $('forgotEmail').value.trim(),
-        {
-          redirectTo: window.location.origin + window.location.pathname
-        }
-      );
-
-    if (error) throw error;
-
-    notice(
-      'forgotNotice',
-      'Nếu email hợp lệ, hướng dẫn khôi phục sẽ được gửi đến hộp thư.'
-    );
-  } catch (error) {
-    showAuthError('forgotNotice', error);
-  }
-});
-
-// THEO DÕI ĐĂNG NHẬP
-supabaseClient.auth.onAuthStateChange((event, session) => {
-  if (session?.user) {
-    refreshAccount();
-  } else {
-    updateGuestUI();
-  }
-});
-
-// KIỂM TRA PHIÊN
-refreshAccount();
-
-// ĐĂNG XUẤT
-async function logoutVibNest() {
-  const { error } = await supabaseClient.auth.signOut();
-
-  if (error) {
-    console.error(error);
-    alert('Không thể đăng xuất. Vui lòng thử lại.');
+  if(!supabaseClient){
+    notify('forgotNotice','Không tải được Supabase. Vui lòng thử lại.');
     return;
   }
 
-  updateGuestUI();
+  try{
+    const {error}=await supabaseClient.auth.resetPasswordForEmail(
+      $('forgotEmail').value.trim(),
+      {redirectTo:location.origin+location.pathname}
+    );
+
+    if(error)throw error;
+
+    notify(
+      'forgotNotice',
+      'Nếu email được đăng ký, hướng dẫn khôi phục sẽ được gửi. Kiểm tra cả thư rác.',
+      true
+    );
+  }catch(err){
+    authError('forgotNotice',err);
+  }
+});
+
+/* ĐĂNG XUẤT */
+async function logout(){
+  if(!supabaseClient)return;
+
+  const {error}=await supabaseClient.auth.signOut();
+
+  if(error){
+    notify('accountNotice',error.message);
+    return;
+  }
+
+  currentUser=null;
+  renderUser();
+  notify('accountNotice','Bạn đã đăng xuất.',true);
   showPage('home');
 }
+
+/* ĐỔI TÊN HIỂN THỊ */
+async function editName(){
+  if(!currentUser){
+    showPage('login');
+    return;
+  }
+
+  const name=prompt(
+    'Nhập tên hiển thị mới:',
+    currentUser.user_metadata?.display_name||''
+  );
+
+  if(name===null)return;
+
+  if(!name.trim()){
+    notify('accountNotice','Tên hiển thị không được để trống.');
+    return;
+  }
+
+  const {data,error}=await supabaseClient.auth.updateUser({
+    data:{display_name:name.trim()}
+  });
+
+  if(error){
+    notify('accountNotice','Không thể cập nhật tên: '+error.message);
+    return;
+  }
+
+  currentUser=data.user;
+  renderUser();
+  notify('accountNotice','Đã cập nhật tên hiển thị.',true);
+}
+
+/* KIỂM TRA URL VIDEO */
+$('urlForm').addEventListener('submit',e=>{
+  e.preventDefault();
+
+  try{
+    const u=new URL($('videoUrl').value.trim());
+
+    if(!['http:','https:'].includes(u.protocol))throw Error();
+
+    $('urlResult').textContent=
+      u.hostname+' · '+u.protocol.replace(':','').toUpperCase();
+
+    $('urlResult').classList.add('show');
+
+    notify(
+      'urlNotice',
+      'URL hợp lệ về định dạng. Chưa tải video vì API backend chưa kết nối.',
+      true
+    );
+
+    historyItems.unshift({
+      host:u.hostname,
+      date:new Date().toLocaleString('vi-VN')
+    });
+
+    historyItems=historyItems.slice(0,100);
+    saveHistory();
+  }catch(err){
+    notify('urlNotice','URL chưa hợp lệ. Hãy kiểm tra lại.');
+  }
+});
+
+/* GIAO DIỆN SÁNG/TỐI */
+function toggleTheme(){
+  document.body.classList.toggle('dark');
+
+  localStorage.setItem(
+    'vibnest_theme',
+    document.body.classList.contains('dark')?'dark':'light'
+  );
+
+  $('theme').textContent=
+    document.body.classList.contains('dark')?'☀️':'🌙';
+}
+
+$('theme').onclick=toggleTheme;
+
+document.body.classList.toggle(
+  'dark',
+  localStorage.getItem('vibnest_theme')==='dark'
+);
+
+$('theme').textContent=
+  document.body.classList.contains('dark')?'☀️':'🌙';
+
+/* KIỂM TRA PHIÊN ĐĂNG NHẬP */
+if(supabaseClient){
+  supabaseClient.auth.getSession().then(({data,error})=>{
+    if(!error){
+      currentUser=data.session?.user||null;
+      renderUser();
+    }
+  });
+
+  supabaseClient.auth.onAuthStateChange((_event,session)=>{
+    currentUser=session?.user||null;
+    renderUser();
+  });
+}else{
+  notify(
+    'loginNotice',
+    'Không tải được thư viện xác thực. Kiểm tra kết nối mạng.'
+  );
+}
+
+renderHistory();
+renderUser();
 </script>
 </body>
 </html>
+</nav>
