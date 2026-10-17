@@ -1,1014 +1,689 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#01497c">
-  <meta name="description" content="VibNest - Trình quản lý và tải video trực tuyến.">
-  <title>VibNest User</title>
-
-  <style>
-    :root {
-      --primary: #01497c;
-      --primary-light: #1676b9;
-      --bg: #eaf2f9;
-      --surface: #ffffff;
-      --text: #17324b;
-      --muted: #71849a;
-      --border: #dce6ef;
-      --soft: #f2f7fc;
-      --shadow: 0 8px 30px rgba(20, 60, 100, .07);
-    }
-
-    body.dark {
-      --bg: #0d1724;
-      --surface: #172536;
-      --text: #edf5ff;
-      --muted: #9bb0c6;
-      --border: #2b4055;
-      --soft: #203247;
-      --shadow: 0 8px 30px rgba(0, 0, 0, .15);
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      transition: background .2s, color .2s;
-    }
-
-    button, input, select { font: inherit; }
-    button { cursor: pointer; }
-
-    .topbar {
-      height: 68px;
-      background: var(--primary);
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 5%;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      box-shadow: 0 4px 15px #002d4c22;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 11px;
-      font-size: 22px;
-      font-weight: 800;
-      letter-spacing: -.5px;
-    }
-
-    .brand-icon {
-      width: 38px;
-      height: 38px;
-      border-radius: 12px;
-      background: white;
-      color: var(--primary);
-      display: grid;
-      place-items: center;
-      font-size: 23px;
-    }
-
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .header-btn {
-      border: 1px solid #ffffff60;
-      border-radius: 10px;
-      padding: 10px 13px;
-      background: transparent;
-      color: white;
-    }
-
-    .header-btn.primary {
-      background: white;
-      color: var(--primary);
-      font-weight: 700;
-    }
-
-    .layout {
-      display: grid;
-      grid-template-columns: 230px minmax(0, 1fr);
-      min-height: calc(100vh - 68px);
-    }
-
-    .sidebar {
-      padding: 24px 14px;
-      border-right: 1px solid var(--border);
-      background: var(--surface);
-    }
-
-    .nav-label {
-      color: var(--muted);
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 1.2px;
-      margin: 12px 12px;
-    }
-
-    .nav-item {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-align: left;
-      padding: 13px 14px;
-      margin: 4px 0;
-      border: 0;
-      border-radius: 11px;
-      background: transparent;
-      color: var(--muted);
-      font-weight: 600;
-    }
-
-    .nav-item:hover, .nav-item.active {
-      color: var(--primary-light);
-      background: var(--soft);
-    }
-
-    body.dark .nav-item:hover,
-    body.dark .nav-item.active { color: #72baff; }
-
-    .nav-icon { width: 22px; text-align: center; }
-
-    .sidebar-bottom {
-      margin-top: 45px;
-      padding: 16px;
-      border-radius: 14px;
-      background: var(--soft);
-      font-size: 13px;
-      line-height: 1.6;
-      color: var(--muted);
-    }
-
-    main {
-      width: 100%;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 32px;
-    }
-
-    .page { display: none; }
-    .page.active { display: block; }
-
-    .welcome {
-      padding: 30px;
-      border-radius: 20px;
-      background: linear-gradient(120deg, #01497c, #1676b9);
-      color: white;
-      position: relative;
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-
-    .welcome::after {
-      content: "▶";
-      position: absolute;
-      right: 45px;
-      top: 5px;
-      font-size: 125px;
-      opacity: .09;
-      transform: rotate(-10deg);
-    }
-
-    .welcome h1 {
-      margin: 0 0 12px;
-      font-size: clamp(25px, 4vw, 34px);
-    }
-
-    .welcome p {
-      max-width: 520px;
-      line-height: 1.7;
-      color: #e1f1ff;
-    }
-
-    .eyebrow {
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 1.5px;
-      opacity: .8;
-    }
-
-    .section-title {
-      margin: 30px 0 16px;
-      font-size: 20px;
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 16px;
-      margin-top: 22px;
-    }
-
-    .stat, .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 22px;
-      box-shadow: var(--shadow);
-    }
-
-    .stat-icon {
-      font-size: 24px;
-      margin-bottom: 12px;
-    }
-
-    .stat-value {
-      font-size: 24px;
-      font-weight: 800;
-    }
-
-    .muted { color: var(--muted); }
-    .small { font-size: 13px; }
-
-    .card { margin-top: 16px; }
-
-    .card h2 {
-      font-size: 19px;
-      margin: 0 0 8px;
-    }
-
-    .input-label {
-      display: block;
-      font-weight: 700;
-      font-size: 13px;
-      margin: 18px 0 8px;
-    }
-
-    .input, select {
-      width: 100%;
-      min-height: 46px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 12px 14px;
-      color: var(--text);
-      background: var(--surface);
-      outline: none;
-    }
-
-    .input:focus, select:focus {
-      border-color: var(--primary-light);
-      box-shadow: 0 0 0 3px #1676b91c;
-    }
-
-    .input-row {
-      display: flex;
-      gap: 10px;
-    }
-
-    .input-row .input { flex: 1; min-width: 0; }
-
-    .btn {
-      border: 0;
-      background: var(--primary);
-      color: white;
-      border-radius: 10px;
-      padding: 12px 18px;
-      font-weight: 700;
-      min-height: 44px;
-    }
-
-    .btn:hover { background: var(--primary-light); }
-
-    .btn-secondary {
-      color: var(--primary-light);
-      background: var(--soft);
-      border: 1px solid var(--border);
-    }
-
-    body.dark .btn-secondary { color: #a5d6ff; }
-
-    .btn-full { width: 100%; margin-top: 18px; }
-
-    .feature-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 16px;
-      margin-top: 20px;
-    }
-
-    .feature {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 20px;
-    }
-
-    .feature-icon { font-size: 25px; }
-    .feature h3 { font-size: 16px; margin-bottom: 8px; }
-    .feature p { font-size: 13px; line-height: 1.7; color: var(--muted); }
-
-    .notice {
-      display: none;
-      margin-top: 16px;
-      padding: 13px 15px;
-      background: var(--soft);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      font-size: 14px;
-      line-height: 1.6;
-    }
-
-    .notice.show { display: block; }
-
-    .result {
-      display: none;
-      margin-top: 18px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 16px;
-    }
-
-    .result.show { display: block; }
-
-    .result-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 10px 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 14px;
-    }
-
-    .result-row:last-child { border-bottom: 0; }
-
-    .table-wrap { overflow-x: auto; }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
-      margin-top: 12px;
-    }
-
-    th, td {
-      text-align: left;
-      padding: 13px 10px;
-      border-bottom: 1px solid var(--border);
-      white-space: nowrap;
-    }
-
-    th { color: var(--muted); font-size: 12px; }
-
-    .badge {
-      display: inline-block;
-      padding: 5px 8px;
-      border-radius: 7px;
-      background: var(--soft);
-      font-size: 12px;
-    }
-
-    .profile-head {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 20px;
-    }
-
-    .avatar {
-      width: 62px;
-      height: 62px;
-      display: grid;
-      place-items: center;
-      background: var(--soft);
-      border-radius: 50%;
-      font-size: 28px;
-    }
-
-    .form-card {
-      max-width: 480px;
-      margin: 25px auto;
-    }
-
-    .form-card h1 { margin-bottom: 8px; }
-    .form-switch { text-align: center; margin-top: 20px; }
-
-    .link-btn {
-      background: none;
-      border: 0;
-      color: var(--primary-light);
-      font-weight: 700;
-      padding: 5px;
-    }
-
-    footer {
-      margin-top: 35px;
-      padding: 22px 0;
-      text-align: center;
-      font-size: 12px;
-      color: var(--muted);
-      border-top: 1px solid var(--border);
-    }
-
-    .mobile-nav { display: none; }
-
-    @media (max-width: 850px) {
-      .layout { grid-template-columns: 1fr; }
-      .sidebar { display: none; }
-      main { padding: 22px 16px 95px; }
-      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .feature-grid { grid-template-columns: 1fr; }
-      .welcome { padding: 24px 20px; }
-      .welcome::after { right: 10px; font-size: 90px; }
-      .mobile-nav {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        display: flex;
-        justify-content: space-around;
-        padding: 9px 3px calc(9px + env(safe-area-inset-bottom));
-        background: var(--surface);
-        border-top: 1px solid var(--border);
-        z-index: 20;
-      }
-      .mobile-nav button {
-        background: none;
-        border: 0;
-        color: var(--muted);
-        font-size: 11px;
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-        align-items: center;
-      }
-      .mobile-nav button.active { color: var(--primary-light); }
-      .mobile-nav span { font-size: 20px; }
-    }
-
-    @media (max-width: 480px) {
-      .topbar { height: 60px; padding: 0 14px; }
-      .brand { font-size: 19px; }
-      .brand-icon { width: 34px; height: 34px; }
-      .header-actions { gap: 6px; }
-      .header-btn { padding: 8px; font-size: 12px; }
-      .stats { gap: 10px; }
-      .stat { padding: 15px; }
-      .stat-value { font-size: 21px; }
-      .input-row { flex-direction: column; }
-      .input-row .btn { width: 100%; }
-      .card { padding: 17px; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#01497C">
+<meta name="description" content="VibNest User - Không gian quản lý video hiện đại.">
+<title>VibNest User</title>
+
+<style>
+:root{
+  --primary:#01497C;
+  --blue:#0878e8;
+  --bg:#E6F0F8;
+  --surface:#fff;
+  --text:#18334d;
+  --muted:#71849a;
+  --border:#dce7f1;
+  --soft:#f1f7fc;
+  --success:#13875b;
+  --danger:#d94343;
+  --shadow:0 8px 28px rgba(22,63,101,.07);
+}
+body.dark{
+  --bg:#0b1522;
+  --surface:#142235;
+  --text:#edf5ff;
+  --muted:#9aadc3;
+  --border:#2a3c51;
+  --soft:#1c3047;
+  --shadow:0 8px 28px rgba(0,0,0,.15);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Inter,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  transition:background .2s,color .2s;
+}
+button,input,select{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible{
+  outline:3px solid #57a7ff;
+  outline-offset:2px;
+}
+.topbar{
+  height:68px;
+  padding:0 26px;
+  background:var(--primary);
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  position:sticky;
+  top:0;
+  z-index:20;
+  box-shadow:0 4px 18px #002e501a;
+}
+.brand{display:flex;align-items:center;gap:11px;font-weight:800;font-size:22px}
+.logo{
+  width:39px;height:39px;
+  border-radius:12px;
+  background:white;color:var(--primary);
+  display:grid;place-items:center;font-size:23px;
+}
+.brand small{
+  font-size:11px;
+  font-weight:600;
+  background:#ffffff20;
+  border:1px solid #ffffff40;
+  padding:4px 7px;
+  border-radius:6px;
+}
+.header-actions{display:flex;gap:9px;align-items:center}
+.header-btn{
+  padding:9px 13px;border-radius:9px;
+  border:1px solid #ffffff65;
+  color:white;background:transparent;
+}
+.header-btn.primary{background:white;color:var(--primary);font-weight:700}
+.layout{display:grid;grid-template-columns:235px minmax(0,1fr);min-height:calc(100vh - 68px)}
+.sidebar{
+  background:var(--surface);
+  border-right:1px solid var(--border);
+  padding:22px 14px;
+  display:flex;flex-direction:column;
+}
+.nav-caption{
+  font-size:10px;font-weight:800;letter-spacing:1.2px;
+  color:var(--muted);padding:10px 12px;
+}
+.nav-item{
+  display:flex;align-items:center;gap:12px;
+  width:100%;padding:12px 13px;margin:3px 0;
+  border:0;border-radius:10px;background:transparent;
+  color:var(--muted);font-size:13px;font-weight:600;text-align:left;
+}
+.nav-item:hover,.nav-item.active{background:var(--soft);color:var(--blue)}
+.nav-icon{width:22px;text-align:center;font-size:17px}
+.sidebar-spacer{flex:1;min-height:30px}
+.sidebar-user{
+  display:flex;align-items:center;gap:10px;
+  padding:13px 7px 3px;border-top:1px solid var(--border);
+  margin-top:15px;
+}
+.avatar{
+  width:38px;height:38px;border-radius:50%;
+  display:grid;place-items:center;
+  background:#d8eaff;color:var(--primary);font-weight:800;
+  flex-shrink:0;
+}
+.user-name{font-size:12px;font-weight:700}
+.user-email{font-size:10px;color:var(--muted);margin-top:4px;overflow-wrap:anywhere}
+main{max-width:1450px;width:100%;margin:auto;padding:30px}
+.page{display:none;animation:fade .18s ease}
+.page.active{display:block}
+@keyframes fade{from{opacity:.5;transform:translateY(3px)}to{opacity:1;transform:none}}
+h1{font-size:27px;margin:8px 0 10px;letter-spacing:-.5px}
+h2{font-size:18px;margin:0 0 8px}
+h3{font-size:15px;margin:0 0 8px}
+p{line-height:1.65}
+.muted{color:var(--muted)}
+.small{font-size:12px}
+.eyebrow{font-size:11px;font-weight:800;letter-spacing:1.4px;color:var(--blue)}
+.page-description{font-size:14px;color:var(--muted);margin-top:0}
+.hero{
+  padding:32px;
+  color:white;border-radius:20px;
+  background:linear-gradient(120deg,#01497c,#0878e8);
+  position:relative;overflow:hidden;
+  box-shadow:var(--shadow);
+}
+.hero:after{
+  content:"▶";position:absolute;right:35px;top:-15px;
+  font-size:145px;color:white;opacity:.08;transform:rotate(-9deg);
+  pointer-events:none;
+}
+.hero .eyebrow{color:#bde1ff}
+.hero h1{font-size:clamp(27px,4vw,39px);max-width:600px}
+.hero p{color:#e1efff;max-width:560px;font-size:14px}
+.hero .btn{position:relative;z-index:1;background:white;color:var(--primary)}
+.section-heading{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;margin:28px 0 15px;
+}
+.section-heading h2{margin:0}
+.grid{display:grid;gap:16px}
+.stats{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:20px}
+.card,.stat{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:15px;padding:20px;box-shadow:var(--shadow);
+}
+.stat-top{display:flex;justify-content:space-between;align-items:center}
+.stat-icon{
+  width:43px;height:43px;border-radius:12px;
+  display:grid;place-items:center;background:var(--soft);font-size:21px;
+}
+.stat-number{font-size:27px;font-weight:800;margin:17px 0 5px}
+.stat-label{font-size:12px;color:var(--muted)}
+.features{grid-template-columns:repeat(3,minmax(0,1fr))}
+.feature-icon{font-size:26px;margin-bottom:12px}
+.feature p{font-size:12px;color:var(--muted);margin-bottom:0}
+.card{margin-top:16px}
+.card-description{font-size:13px;color:var(--muted);margin:0 0 16px}
+.btn{
+  min-height:43px;padding:11px 16px;
+  border:0;border-radius:9px;background:var(--blue);
+  color:white;font-weight:700;font-size:13px;
+}
+.btn:hover{filter:brightness(1.06)}
+.btn-secondary{
+  background:var(--soft);color:var(--primary);
+  border:1px solid var(--border);
+}
+body.dark .btn-secondary{color:#b8ddff}
+.btn-danger{background:#fff0f0;color:var(--danger);border:1px solid #ffd8d8}
+body.dark .btn-danger{background:#3c222a;color:#ffb2b2;border-color:#60313a}
+.btn-small{min-height:32px;padding:7px 10px;font-size:11px}
+.btn-full{width:100%;margin-top:17px}
+.label{display:block;font-size:12px;font-weight:700;margin:17px 0 8px}
+.input,select{
+  width:100%;min-height:44px;padding:11px 12px;
+  border:1px solid var(--border);border-radius:9px;
+  background:var(--surface);color:var(--text);
+}
+.input:focus,select:focus{border-color:var(--blue);outline:none}
+.input-row{display:flex;gap:9px}
+.input-row .input{flex:1;min-width:0}
+.notice{
+  display:none;padding:12px 14px;margin-top:14px;
+  border-radius:9px;background:var(--soft);
+  border:1px solid var(--border);font-size:12px;line-height:1.6;
+}
+.notice.show{display:block}
+.result{display:none;margin-top:18px}
+.result.show{display:block}
+.result-box{
+  border:1px solid var(--border);border-radius:12px;
+  padding:15px;background:var(--soft);
+}
+.result-row{
+  display:flex;justify-content:space-between;gap:15px;
+  padding:11px 0;border-bottom:1px solid var(--border);font-size:12px;
+}
+.result-row:last-child{border-bottom:0}
+.result-row span:last-child{text-align:right;overflow-wrap:anywhere}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin:15px 0}
+.pill{
+  border:1px solid var(--border);border-radius:8px;
+  padding:8px 12px;background:var(--surface);
+  color:var(--muted);font-size:12px;
+}
+.pill.active{background:var(--primary);color:white;border-color:var(--primary)}
+.progress-track{height:7px;background:var(--border);border-radius:99px;overflow:hidden}
+.progress-fill{height:100%;width:0;background:var(--blue);transition:width .3s}
+.table-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:12px}
+th,td{text-align:left;padding:13px 10px;border-bottom:1px solid var(--border)}
+th{font-size:10px;color:var(--muted);font-weight:800;white-space:nowrap}
+td{overflow-wrap:anywhere}
+.badge{display:inline-block;border-radius:6px;padding:5px 8px;background:var(--soft);font-size:10px}
+.empty{text-align:center;padding:30px 10px;color:var(--muted);font-size:13px}
+.profile-header{display:flex;align-items:center;gap:14px}
+.profile-header .avatar{width:60px;height:60px;font-size:22px}
+.setting-row{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:15px;padding:15px 0;border-bottom:1px solid var(--border);
+}
+.setting-row:last-child{border-bottom:0}
+.setting-title{font-size:13px;font-weight:700}
+.setting-description{font-size:11px;color:var(--muted);margin-top:5px}
+.switch{width:43px;height:24px;position:relative;flex-shrink:0}
+.switch input{opacity:0;width:0;height:0}
+.slider{position:absolute;inset:0;border-radius:20px;background:#aab8c7;transition:.2s}
+.slider:before{
+  content:"";position:absolute;width:18px;height:18px;left:3px;top:3px;
+  border-radius:50%;background:white;transition:.2s;
+}
+.switch input:checked + .slider{background:var(--blue)}
+.switch input:checked + .slider:before{transform:translateX(19px)}
+.form-card{max-width:470px;margin:24px auto;padding:28px}
+.form-logo{
+  width:54px;height:54px;border-radius:16px;background:var(--primary);
+  color:white;display:grid;place-items:center;font-size:28px;margin:0 auto 18px;
+}
+.form-card h1{text-align:center;font-size:25px}
+.form-card .page-description{text-align:center}
+.form-links{display:flex;justify-content:space-between;gap:10px;margin-top:13px;font-size:12px}
+.text-button{border:0;background:transparent;color:var(--blue);font-weight:700;padding:4px}
+.form-footer{text-align:center;font-size:12px;color:var(--muted);margin-top:19px}
+.help-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.help-item{display:flex;gap:13px;align-items:flex-start;padding:17px 0;border-bottom:1px solid var(--border)}
+.help-icon{width:39px;height:39px;flex-shrink:0;border-radius:11px;background:var(--soft);display:grid;place-items:center;font-size:19px}
+footer{border-top:1px solid var(--border);margin-top:34px;padding:20px 0;text-align:center;color:var(--muted);font-size:11px}
+.mobile-nav{display:none}
+@media(max-width:1000px){
+  main{padding:23px}
+  .layout{grid-template-columns:210px minmax(0,1fr)}
+  .features{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:760px){
+  .topbar{height:60px;padding:0 14px}
+  .brand{font-size:19px;gap:8px}
+  .logo{width:34px;height:34px}
+  .brand small{font-size:9px}
+  .header-actions{gap:5px}
+  .header-btn{font-size:11px;padding:8px}
+  .layout{display:block;min-height:calc(100vh - 60px)}
+  .sidebar{display:none}
+  main{padding:19px 14px 100px}
+  .hero{padding:24px 20px;border-radius:16px}
+  .hero:after{right:5px;top:5px;font-size:80px}
+  .hero p{font-size:13px;max-width:90%}
+  h1{font-size:24px}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .stat{padding:15px}
+  .stat-number{font-size:23px}
+  .stat-icon{width:37px;height:37px}
+  .features{grid-template-columns:1fr}
+  .card{padding:16px}
+  .input-row{flex-direction:column}
+  .input-row .btn{width:100%}
+  .mobile-nav{
+    display:flex;position:fixed;bottom:0;left:0;right:0;
+    padding:8px 3px calc(8px + env(safe-area-inset-bottom));
+    background:var(--surface);border-top:1px solid var(--border);
+    justify-content:space-around;z-index:30;
+  }
+  .mobile-nav button{
+    flex:1;min-width:0;border:0;background:transparent;color:var(--muted);
+    display:flex;align-items:center;flex-direction:column;gap:4px;
+    font-size:10px;padding:4px 0;
+  }
+  .mobile-nav button.active{color:var(--blue);font-weight:800}
+  .mobile-nav .nav-icon{font-size:20px}
+  .help-grid{grid-template-columns:1fr}
+  .form-card{padding:23px 18px}
+}
+@media(max-width:390px){
+  .header-btn{padding:7px 8px}
+  .brand{font-size:17px}
+  .brand small{display:none}
+  .stats{grid-template-columns:1fr 1fr}
+  .stat-label{font-size:11px}
+  .setting-row{align-items:flex-start}
+}
+</style>
 </head>
 
 <body>
-  <header class="topbar">
-    <div class="brand">
-      <div class="brand-icon">▶</div>
-      <span>VibNest</span>
-    </div>
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">▶</div>
+    <span>VibNest</span>
+    <small>User</small>
+  </div>
+  <div class="header-actions">
+    <button class="header-btn" id="themeButton" aria-label="Đổi giao diện">🌙</button>
+    <button class="header-btn" onclick="showPage('login')">Đăng nhập</button>
+    <button class="header-btn primary" onclick="showPage('register')">Đăng ký</button>
+  </div>
+</header>
 
-    <div class="header-actions">
-      <button class="header-btn" id="themeButton" type="button" aria-label="Đổi giao diện">🌙</button>
-      <button class="header-btn" type="button" onclick="showPage('login')">Đăng nhập</button>
-      <button class="header-btn primary" type="button" onclick="showPage('register')">Đăng ký</button>
-    </div>
-  </header>
+<div class="layout">
+<aside class="sidebar">
+  <div class="nav-caption">KHÔNG GIAN CỦA BẠN</div>
+  <button class="nav-item active" data-page="home" onclick="showPage('home')"><span class="nav-icon">⌂</span>Trang chủ</button>
+  <button class="nav-item" data-page="download" onclick="showPage('download')"><span class="nav-icon">⇩</span>Tải video</button>
+  <button class="nav-item" data-page="history" onclick="showPage('history')"><span class="nav-icon">◷</span>Lịch sử tải</button>
+  <button class="nav-item" data-page="account" onclick="showPage('account')"><span class="nav-icon">♙</span>Tài khoản</button>
+  <div class="nav-caption" style="margin-top:20px">HỆ THỐNG</div>
+  <button class="nav-item" data-page="settings" onclick="showPage('settings')"><span class="nav-icon">⚙</span>Cài đặt</button>
+  <button class="nav-item" data-page="help" onclick="showPage('help')"><span class="nav-icon">ⓘ</span>Trợ giúp</button>
+  <div class="sidebar-spacer"></div>
+  <div class="sidebar-user">
+    <div class="avatar" id="sidebarAvatar">V</div>
+    <div><div class="user-name" id="sidebarName">Khách truy cập</div><div class="user-email">VibNest User</div></div>
+  </div>
+</aside>
 
-  <div class="layout">
-    <aside class="sidebar">
-      <div class="nav-label">KHÔNG GIAN CỦA BẠN</div>
-
-      <button class="nav-item active" data-page="home" onclick="showPage('home')">
-        <span class="nav-icon">⌂</span> Tổng quan
-      </button>
-
-      <button class="nav-item" data-page="download" onclick="showPage('download')">
-        <span class="nav-icon">⇩</span> Tải video
-      </button>
-
-      <button class="nav-item" data-page="history" onclick="showPage('history')">
-        <span class="nav-icon">◷</span> Lịch sử tải
-      </button>
-
-      <button class="nav-item" data-page="account" onclick="showPage('account')">
-        <span class="nav-icon">♙</span> Tài khoản
-      </button>
-
-      <div class="nav-label" style="margin-top:28px">HỆ THỐNG</div>
-
-      <button class="nav-item" data-page="settings" onclick="showPage('settings')">
-        <span class="nav-icon">⚙</span> Cài đặt
-      </button>
-
-      <div class="sidebar-bottom">
-        <strong>VibNest User</strong><br>
-        Không gian quản lý video của bạn.<br>
-        <span class="small">Phiên bản giao diện 1.0</span>
-      </div>
-    </aside>
-
-    <main>
-      <!-- TRANG CHỦ -->
-      <section class="page active" id="home">
-        <div class="welcome">
-          <div class="eyebrow">CHÀO MỪNG ĐẾN VỚI VIBNEST</div>
-          <h1>Mọi video, trong tầm tay.</h1>
-          <p>
-            Quản lý trải nghiệm video của bạn trong một không gian
-            gọn gàng, hiện đại và dễ sử dụng.
-          </p>
-          <button class="btn" style="background:white;color:#01497c"
-                  onclick="showPage('download')">
-            Bắt đầu ngay&nbsp; →
-          </button>
-        </div>
-
-        <h2 class="section-title">Không gian của bạn</h2>
-
-        <div class="stats">
-          <div class="stat">
-            <div class="stat-icon">⇩</div>
-            <div class="stat-value" id="totalDownloads">0</div>
-            <div class="muted small">Lượt tải được ghi nhận</div>
-          </div>
-
-          <div class="stat">
-            <div class="stat-icon">◷</div>
-            <div class="stat-value" id="historyCount">0</div>
-            <div class="muted small">Mục trong lịch sử</div>
-          </div>
-
-          <div class="stat">
-            <div class="stat-icon">♙</div>
-            <div class="stat-value" id="accountStatus">Khách</div>
-            <div class="muted small">Trạng thái tài khoản</div>
-          </div>
-        </div>
-
-        <h2 class="section-title">Khám phá VibNest</h2>
-
-        <div class="feature-grid">
-          <div class="feature">
-            <div class="feature-icon">🔗</div>
-            <h3>Nhập liên kết</h3>
-            <p>Dán đường dẫn video để kiểm tra khả năng hỗ trợ.</p>
-          </div>
-
-          <div class="feature">
-            <div class="feature-icon">📁</div>
-            <h3>Quản lý lịch sử</h3>
-            <p>Theo dõi các liên kết và thao tác tải đã ghi nhận.</p>
-          </div>
-
-          <div class="feature">
-            <div class="feature-icon">⚙️</div>
-            <h3>Tùy chỉnh cá nhân</h3>
-            <p>Điều chỉnh giao diện và thông tin sử dụng.</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- TẢI VIDEO -->
-      <section class="page" id="download">
-        <div class="eyebrow muted">CÔNG CỤ</div>
-        <h1>Tải video</h1>
-        <p class="muted">Nhập liên kết video mà bạn có quyền tải xuống.</p>
-
-        <div class="card">
-          <h2>🔗 Liên kết video</h2>
-          <p class="muted small">
-            Khả năng phân tích và tải thực tế phụ thuộc vào máy chủ
-            và nguồn video được hỗ trợ.
-          </p>
-
-          <form id="downloadForm">
-            <label class="input-label" for="videoUrl">URL video</label>
-
-            <div class="input-row">
-              <input class="input" id="videoUrl" type="url"
-                     placeholder="https://example.com/video"
-                     autocomplete="url" required>
-
-              <button class="btn" type="submit">Kiểm tra liên kết</button>
-            </div>
-          </form>
-
-          <div class="notice" id="downloadNotice" role="status"></div>
-
-          <div class="result" id="linkResult">
-            <strong>Đã kiểm tra định dạng liên kết</strong>
-
-            <div class="result-row">
-              <span class="muted">Địa chỉ</span>
-              <span id="resultHost" style="overflow-wrap:anywhere"></span>
-            </div>
-
-            <p class="muted small">
-              Đây chỉ là bước kiểm tra URL trên trình duyệt,
-              chưa phải phân tích video từ máy chủ.
-            </p>
-
-            <button class="btn btn-secondary" type="button"
-                    onclick="showPage('history')">
-              Xem lịch sử →
-            </button>
-          </div>
-        </div>
-
-        <div class="card">
-          <h2>📌 Lưu ý</h2>
-          <p class="muted small" style="line-height:1.8">
-            VibNest hiện đang ở giai đoạn giao diện ban đầu.
-            Để phân tích video, chọn chất lượng và tải tệp thật,
-            cần xây dựng API backend. Chỉ tải nội dung bạn có quyền
-            lưu và tuân thủ điều khoản của nền tảng cung cấp video.
-          </p>
-        </div>
-      </section>
-
-      <!-- LỊCH SỬ -->
-      <section class="page" id="history">
-        <div class="eyebrow muted">THƯ VIỆN CỦA BẠN</div>
-        <h1>Lịch sử hoạt động</h1>
-        <p class="muted">Các liên kết được ghi nhận trên trình duyệt này.</p>
-
-        <div class="card">
-          <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap">
-            <h2>Danh sách liên kết</h2>
-            <button class="btn btn-secondary" onclick="clearHistory()">
-              Xóa lịch sử
-            </button>
-          </div>
-
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Liên kết</th>
-                  <th>Thời gian</th>
-                  <th>Trạng thái</th>
-                  <th>Thao tác</th>
-                </tr>
-              </thead>
-              <tbody id="historyTable"></tbody>
-            </table>
-          </div>
-
-          <p id="emptyHistory" class="muted small">
-            Chưa có liên kết nào. Hãy thử nhập liên kết trong mục Tải video.
-          </p>
-        </div>
-      </section>
-
-      <!-- TÀI KHOẢN -->
-      <section class="page" id="account">
-        <div class="eyebrow muted">CÁ NHÂN</div>
-        <h1>Tài khoản của bạn</h1>
-
-        <div class="card">
-          <div class="profile-head">
-            <div class="avatar">♙</div>
-            <div>
-              <h2 id="profileName">Khách truy cập</h2>
-              <div class="muted small" id="profileEmail">Chưa đăng nhập</div>
-            </div>
-          </div>
-
-          <p class="muted small" id="accountMessage">
-            Đăng nhập bằng hệ thống tài khoản sau khi backend được thiết lập.
-          </p>
-
-          <button class="btn" onclick="showPage('login')">Đăng nhập</button>
-          <button class="btn btn-secondary" onclick="showPage('register')">Tạo tài khoản</button>
-        </div>
-      </section>
-
-      <!-- CÀI ĐẶT -->
-      <section class="page" id="settings">
-        <div class="eyebrow muted">TÙY CHỈNH</div>
-        <h1>Cài đặt</h1>
-
-        <div class="card">
-          <h2>Giao diện</h2>
-          <p class="muted small">Chọn chế độ hiển thị phù hợp.</p>
-
-          <label class="input-label" for="themeSelect">Chế độ màu</label>
-          <select id="themeSelect">
-            <option value="light">Sáng</option>
-            <option value="dark">Tối</option>
-          </select>
-
-          <label class="input-label" for="languageSelect">Ngôn ngữ</label>
-          <select id="languageSelect">
-            <option value="vi">Tiếng Việt</option>
-            <option value="en">English (bản dịch chưa hoàn thiện)</option>
-          </select>
-
-          <p class="muted small">
-            Lựa chọn ngôn ngữ hiện mới là tùy chọn giao diện,
-            chưa dịch toàn bộ nội dung.
-          </p>
-        </div>
-
-        <div class="card">
-          <h2>Phiên bản</h2>
-          <div class="result-row">
-            <span class="muted">Tên ứng dụng</span>
-            <strong>VibNest User</strong>
-          </div>
-          <div class="result-row">
-            <span class="muted">Phiên bản</span>
-            <strong>1.0.0 — Prototype</strong>
-          </div>
-          <div class="result-row">
-            <span class="muted">Trạng thái backend</span>
-            <strong>Chưa kết nối</strong>
-          </div>
-        </div>
-      </section>
-
-      <!-- ĐĂNG NHẬP -->
-      <section class="page" id="login">
-        <div class="card form-card">
-          <div style="text-align:center;font-size:35px">🔐</div>
-          <h1 style="text-align:center">Chào mừng trở lại</h1>
-          <p class="muted" style="text-align:center">
-            Đăng nhập vào tài khoản VibNest.
-          </p>
-
-          <form id="loginForm">
-            <label class="input-label" for="loginEmail">Email</label>
-            <input class="input" id="loginEmail" type="email"
-                   autocomplete="email" required>
-
-            <label class="input-label" for="loginPassword">Mật khẩu</label>
-            <input class="input" id="loginPassword" type="password"
-                   autocomplete="current-password" required>
-
-            <button class="btn btn-full" type="submit">Đăng nhập</button>
-          </form>
-
-          <div class="notice" id="loginNotice" role="status"></div>
-
-          <div class="form-switch">
-            Chưa có tài khoản?
-            <button class="link-btn" onclick="showPage('register')">Đăng ký</button>
-          </div>
-
-          <p class="muted small">
-            Biểu mẫu này chưa xác thực tài khoản. Không nhập mật khẩu
-            thật cho đến khi hệ thống backend an toàn được triển khai.
-          </p>
-        </div>
-      </section>
-
-      <!-- ĐĂNG KÝ -->
-      <section class="page" id="register">
-        <div class="card form-card">
-          <div style="text-align:center;font-size:35px">✨</div>
-          <h1 style="text-align:center">Tạo tài khoản</h1>
-          <p class="muted" style="text-align:center">
-            Bắt đầu sử dụng không gian VibNest.
-          </p>
-
-          <form id="registerForm">
-            <label class="input-label" for="registerName">Tên hiển thị</label>
-            <input class="input" id="registerName" autocomplete="name" required>
-
-            <label class="input-label" for="registerEmail">Email</label>
-            <input class="input" id="registerEmail" type="email"
-                   autocomplete="email" required>
-
-            <label class="input-label" for="registerPassword">Mật khẩu</label>
-            <input class="input" id="registerPassword" type="password"
-                   minlength="8" autocomplete="new-password" required>
-
-            <button class="btn btn-full" type="submit">Tạo tài khoản</button>
-          </form>
-
-          <div class="notice" id="registerNotice" role="status"></div>
-
-          <div class="form-switch">
-            Đã có tài khoản?
-            <button class="link-btn" onclick="showPage('login')">Đăng nhập</button>
-          </div>
-
-          <p class="muted small">
-            Đây mới là giao diện biểu mẫu. Chưa có tài khoản nào được tạo
-            hoặc lưu trên máy chủ.
-          </p>
-        </div>
-      </section>
-
-      <footer>
-        © 2026 VibNest · Giao diện thử nghiệm · VibNest User
-      </footer>
-    </main>
+<main>
+<!-- HOME -->
+<section class="page active" id="home">
+  <div class="hero">
+    <div class="eyebrow">CHÀO MỪNG ĐẾN VỚI VIBNEST</div>
+    <h1>Video của bạn.<br>Không gian của bạn.</h1>
+    <p>Quản lý các liên kết video trong một không gian hiện đại, gọn gàng và dễ sử dụng trên mọi thiết bị.</p>
+    <button class="btn" onclick="showPage('download')">Bắt đầu ngay&nbsp; →</button>
   </div>
 
-  <nav class="mobile-nav" aria-label="Điều hướng">
-    <button class="active" data-page="home" onclick="showPage('home')">
-      <span>⌂</span>Trang chủ
-    </button>
-    <button data-page="download" onclick="showPage('download')">
-      <span>⇩</span>Tải video
-    </button>
-    <button data-page="history" onclick="showPage('history')">
-      <span>◷</span>Lịch sử
-    </button>
-    <button data-page="account" onclick="showPage('account')">
-      <span>♙</span>Tài khoản
-    </button>
-    <button data-page="settings" onclick="showPage('settings')">
-      <span>⚙</span>Cài đặt
-    </button>
-  </nav>
+  <div class="grid stats">
+    <div class="stat">
+      <div class="stat-top"><span class="muted small">Liên kết đã ghi nhận</span><span class="stat-icon">🔗</span></div>
+      <div class="stat-number" id="statLinks">0</div><div class="stat-label">Trong trình duyệt này</div>
+    </div>
+    <div class="stat">
+      <div class="stat-top"><span class="muted small">Tệp đã tải</span><span class="stat-icon">📥</span></div>
+      <div class="stat-number">0</div><div class="stat-label">Chưa kết nối dịch vụ tải</div>
+    </div>
+    <div class="stat">
+      <div class="stat-top"><span class="muted small">Tài khoản</span><span class="stat-icon">👤</span></div>
+      <div class="stat-number" id="statAccount" style="font-size:20px">Khách</div><div class="stat-label">Chế độ khách</div>
+    </div>
+  </div>
 
-  <script>
-    const $ = id => document.getElementById(id);
+  <div class="section-heading"><h2>Khám phá VibNest</h2><span class="muted small">Đơn giản · Hiện đại</span></div>
+  <div class="grid features">
+    <div class="card">
+      <div class="feature-icon">⚡</div><h3>Thao tác nhanh</h3>
+      <p>Nhập liên kết và kiểm tra định dạng ngay trên giao diện.</p>
+    </div>
+    <div class="card">
+      <div class="feature-icon">📂</div><h3>Lịch sử tập trung</h3>
+      <p>Xem lại các liên kết đã ghi nhận trong trình duyệt.</p>
+    </div>
+    <div class="card">
+      <div class="feature-icon">📱</div><h3>Tối ưu đa thiết bị</h3>
+      <p>Bố cục thích ứng với màn hình máy tính và điện thoại.</p>
+    </div>
+  </div>
+</section>
 
-    function showPage(pageId) {
-      document.querySelectorAll('.page').forEach(page => {
-        page.classList.toggle('active', page.id === pageId);
-      });
+<!-- DOWNLOAD -->
+<section class="page" id="download">
+  <div class="eyebrow">CÔNG CỤ VIDEO</div>
+  <h1>Tải video</h1>
+  <p class="page-description">Nhập đường dẫn video mà bạn có quyền lưu xuống thiết bị.</p>
+  <div class="card">
+    <h2>🔗 Nhập liên kết</h2>
+    <p class="card-description">Hãy dán URL video vào ô bên dưới để kiểm tra định dạng.</p>
+    <form id="urlForm">
+      <label class="label" for="videoUrl">Đường dẫn video</label>
+      <div class="input-row">
+        <input class="input" id="videoUrl" type="url" placeholder="https://example.com/video" required>
+        <button class="btn" type="submit">Kiểm tra URL</button>
+      </div>
+    </form>
+    <div class="notice" id="urlNotice" role="status"></div>
+    <div class="result" id="urlResult">
+      <div class="result-box">
+        <h3>Thông tin liên kết</h3>
+        <div class="result-row"><span class="muted">Tên miền</span><span id="urlHost"></span></div>
+        <div class="result-row"><span class="muted">Giao thức</span><span id="urlProtocol"></span></div>
+        <p class="small muted">Đây mới là bước kiểm tra URL. Chưa có thông tin tiêu đề, chất lượng hoặc tệp video từ máy chủ.</p>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <h2>📌 Về chức năng tải video</h2>
+    <p class="card-description">Để phân tích video, chọn độ phân giải và tải tệp thực tế, VibNest cần kết nối API backend. Chỉ tải nội dung bạn có quyền lưu và tuân thủ điều khoản của nền tảng nguồn.</p>
+    <div class="badge">Backend: Chưa kết nối</div>
+  </div>
+</section>
 
-      document.querySelectorAll('[data-page]').forEach(button => {
-        button.classList.toggle('active', button.dataset.page === pageId);
-      });
+<!-- HISTORY -->
+<section class="page" id="history">
+  <div class="eyebrow">THƯ VIỆN CỦA BẠN</div>
+  <h1>Lịch sử tải</h1>
+  <p class="page-description">Quản lý những liên kết đã được ghi nhận trên trình duyệt hiện tại.</p>
+  <div class="card">
+    <div class="section-heading" style="margin-top:0">
+      <h2>Danh sách liên kết</h2>
+      <button class="btn btn-secondary btn-small" onclick="clearHistory()">Xóa lịch sử</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Địa chỉ</th><th>Thời gian</th><th>Trạng thái</th><th></th></tr></thead>
+        <tbody id="historyTable"></tbody>
+      </table>
+    </div>
+    <div class="empty" id="emptyHistory">📂<p>Chưa có liên kết nào.</p><button class="btn btn-secondary" onclick="showPage('download')">Nhập liên kết</button></div>
+  </div>
+</section>
 
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+<!-- ACCOUNT -->
+<section class="page" id="account">
+  <div class="eyebrow">HỒ SƠ CÁ NHÂN</div>
+  <h1>Tài khoản của bạn</h1>
+  <p class="page-description">Thông tin hồ sơ và trạng thái sử dụng.</p>
+  <div class="card">
+    <div class="profile-header">
+      <div class="avatar" id="profileAvatar">V</div>
+      <div><h2 id="profileName">Khách truy cập</h2><p class="muted small" id="profileEmail">Chưa đăng nhập</p></div>
+    </div>
+    <div class="result-row"><span class="muted">Trạng thái</span><span id="profileStatus">Khách</span></div>
+    <div class="result-row"><span class="muted">Loại tài khoản</span><span>Chưa xác thực</span></div>
+    <p class="card-description" style="margin-top:15px">Hệ thống tài khoản thật sẽ được kết nối sau khi xây dựng backend bảo mật.</p>
+    <button class="btn" onclick="showPage('login')">Đăng nhập</button>
+    <button class="btn btn-secondary" onclick="showPage('register')">Tạo tài khoản</button>
+  </div>
+</section>
 
-    function showNotice(id, message) {
-      const element = $(id);
-      element.textContent = message;
-      element.classList.add('show');
-    }
+<!-- SETTINGS -->
+<section class="page" id="settings">
+  <div class="eyebrow">CÁ NHÂN HÓA</div>
+  <h1>Cài đặt</h1>
+  <p class="page-description">Tùy chỉnh trải nghiệm VibNest của bạn.</p>
+  <div class="card">
+    <h2>Giao diện</h2>
+    <div class="setting-row">
+      <div><div class="setting-title">Chế độ tối</div><div class="setting-description">Giảm độ sáng của giao diện.</div></div>
+      <label class="switch"><input type="checkbox" id="darkSwitch"><span class="slider"></span></label>
+    </div>
+    <label class="label" for="language">Ngôn ngữ</label>
+    <select id="language"><option value="vi">Tiếng Việt</option><option value="en">English (chưa dịch đầy đủ)</option></select>
+    <p class="small muted">Lựa chọn ngôn ngữ hiện được lưu nhưng chưa dịch toàn bộ giao diện.</p>
+  </div>
+  <div class="card">
+    <h2>Thông tin ứng dụng</h2>
+    <div class="result-row"><span class="muted">Tên</span><span>VibNest User</span></div>
+    <div class="result-row"><span class="muted">Phiên bản giao diện</span><span>1.1.0</span></div>
+    <div class="result-row"><span class="muted">Backend</span><span>Chưa kết nối</span></div>
+    <div class="result-row"><span class="muted">Ứng dụng Android</span><span>Chưa phát hành</span></div>
+  </div>
+</section>
 
-    // Chế độ sáng/tối
-    function applyTheme(theme) {
-      document.body.classList.toggle('dark', theme === 'dark');
-      $('themeSelect').value = theme;
-      $('themeButton').textContent = theme === 'dark' ? '☀️' : '🌙';
+<!-- HELP -->
+<section class="page" id="help">
+  <div class="eyebrow">HỖ TRỢ NGƯỜI DÙNG</div>
+  <h1>Trợ giúp</h1>
+  <p class="page-description">Thông tin hướng dẫn sử dụng VibNest.</p>
+  <div class="grid help-grid">
+    <div class="card">
+      <div class="help-item"><div class="help-icon">📘</div><div><h3>Hướng dẫn sử dụng</h3><p class="small muted">Nhập liên kết hợp lệ để kiểm tra URL. Tính năng tải video thật sẽ được bổ sung sau.</p></div></div>
+      <div class="help-item"><div class="help-icon">🔐</div><div><h3>Tài khoản</h3><p class="small muted">Đăng nhập và đăng ký hiện là giao diện mẫu, chưa xác thực tài khoản.</p></div></div>
+    </div>
+    <div class="card">
+      <div class="help-item"><div class="help-icon">🛡️</div><div><h3>Bảo mật</h3><p class="small muted">Không nhập mật khẩu thật vào biểu mẫu cho đến khi hệ thống xác thực được triển khai.</p></div></div>
+      <div class="help-item"><div class="help-icon">🌐</div><div><h3>Khả năng tương thích</h3><p class="small muted">Website được thiết kế responsive cho trình duyệt máy tính và điện thoại.</p></div></div>
+    </div>
+  </div>
+</section>
 
-      try {
-        localStorage.setItem('vibnest_theme', theme);
-      } catch (_) {}
-    }
+<!-- LOGIN -->
+<section class="page" id="login">
+  <div class="card form-card">
+    <div class="form-logo">▶</div>
+    <h1>Chào mừng trở lại</h1>
+    <p class="page-description">Đăng nhập vào VibNest User</p>
+    <form id="loginForm">
+      <label class="label" for="loginEmail">Email</label>
+      <input class="input" id="loginEmail" type="email" autocomplete="email" placeholder="ban@example.com" required>
+      <label class="label" for="loginPassword">Mật khẩu</label>
+      <input class="input" id="loginPassword" type="password" autocomplete="current-password" placeholder="Nhập mật khẩu" required>
+      <div class="form-links"><label><input type="checkbox" id="rememberMe"> Ghi nhớ đăng nhập</label><button type="button" class="text-button" onclick="showPage('forgot')">Quên mật khẩu?</button></div>
+      <button class="btn btn-full" type="submit">Đăng nhập</button>
+    </form>
+    <div class="notice" id="loginNotice" role="status"></div>
+    <div class="form-footer">Chưa có tài khoản? <button class="text-button" onclick="showPage('register')">Đăng ký ngay</button></div>
+    <p class="small muted">Biểu mẫu chưa kết nối máy chủ xác thực. Không nhập mật khẩu thật.</p>
+  </div>
+</section>
 
-    let initialTheme = 'light';
-    try {
-      initialTheme = localStorage.getItem('vibnest_theme') || 'light';
-    } catch (_) {}
+<!-- REGISTER -->
+<section class="page" id="register">
+  <div class="card form-card">
+    <div class="form-logo">▶</div>
+    <h1>Tạo tài khoản</h1>
+    <p class="page-description">Bắt đầu trải nghiệm VibNest</p>
+    <form id="registerForm">
+      <label class="label" for="registerName">Tên hiển thị</label>
+      <input class="input" id="registerName" autocomplete="name" placeholder="Tên của bạn" required>
+      <label class="label" for="registerEmail">Email</label>
+      <input class="input" id="registerEmail" type="email" autocomplete="email" placeholder="ban@example.com" required>
+      <label class="label" for="registerPassword">Mật khẩu</label>
+      <input class="input" id="registerPassword" type="password" minlength="8" autocomplete="new-password" placeholder="Ít nhất 8 ký tự" required>
+      <label class="label" for="registerConfirm">Xác nhận mật khẩu</label>
+      <input class="input" id="registerConfirm" type="password" minlength="8" autocomplete="new-password" required>
+      <button class="btn btn-full" type="submit">Tạo tài khoản</button>
+    </form>
+    <div class="notice" id="registerNotice" role="status"></div>
+    <div class="form-footer">Đã có tài khoản? <button class="text-button" onclick="showPage('login')">Đăng nhập</button></div>
+    <p class="small muted">Chưa có dữ liệu nào được gửi đến máy chủ hoặc tài khoản nào được tạo.</p>
+  </div>
+</section>
 
-    applyTheme(initialTheme);
+<!-- FORGOT -->
+<section class="page" id="forgot">
+  <div class="card form-card">
+    <div class="form-logo">✉</div>
+    <h1>Quên mật khẩu?</h1>
+    <p class="page-description">Khôi phục quyền truy cập tài khoản VibNest.</p>
+    <form id="forgotForm">
+      <label class="label" for="forgotEmail">Email tài khoản</label>
+      <input class="input" id="forgotEmail" type="email" autocomplete="email" placeholder="ban@example.com" required>
+      <button class="btn btn-full" type="submit">Gửi yêu cầu</button>
+    </form>
+    <div class="notice" id="forgotNotice" role="status"></div>
+    <div class="form-footer"><button class="text-button" onclick="showPage('login')">← Quay lại đăng nhập</button></div>
+    <p class="small muted">Gửi email khôi phục thật cần dịch vụ backend và email.</p>
+  </div>
+</section>
 
-    $('themeButton').addEventListener('click', () => {
-      applyTheme(document.body.classList.contains('dark') ? 'light' : 'dark');
+<footer>© 2026 VibNest User · Kết nối đam mê, lưu giữ khoảnh khắc.</footer>
+</main>
+</div>
+
+<nav class="mobile-nav" aria-label="Điều hướng chính">
+  <button class="active" data-page="home" onclick="showPage('home')"><span class="nav-icon">⌂</span>Trang chủ</button>
+  <button data-page="download" onclick="showPage('download')"><span class="nav-icon">⇩</span>Tải video</button>
+  <button data-page="history" onclick="showPage('history')"><span class="nav-icon">◷</span>Lịch sử</button>
+  <button data-page="account" onclick="showPage('account')"><span class="nav-icon">♙</span>Tài khoản</button>
+  <button data-page="settings" onclick="showPage('settings')"><span class="nav-icon">⚙</span>Cài đặt</button>
+</nav>
+
+<script>
+const $ = id => document.getElementById(id);
+
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));
+  document.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function notice(id,message){
+  const el=$(id);
+  el.textContent=message;
+  el.classList.add('show');
+}
+
+function safeGet(key,fallback){
+  try{
+    const value=localStorage.getItem(key);
+    return value===null?fallback:value;
+  }catch(e){return fallback}
+}
+function safeSet(key,value){
+  try{localStorage.setItem(key,value)}catch(e){}
+}
+
+// Theme
+function setTheme(dark){
+  document.body.classList.toggle('dark',dark);
+  $('darkSwitch').checked=dark;
+  $('themeButton').textContent=dark?'☀️':'🌙';
+  safeSet('vibnest_theme',dark?'dark':'light');
+}
+setTheme(safeGet('vibnest_theme','light')==='dark');
+$('themeButton').addEventListener('click',()=>setTheme(!document.body.classList.contains('dark')));
+$('darkSwitch').addEventListener('change',e=>setTheme(e.target.checked));
+
+// Language preference only; full translations are not implemented.
+$('language').value=safeGet('vibnest_language','vi');
+$('language').addEventListener('change',e=>safeSet('vibnest_language',e.target.value));
+
+// URL history
+let items=[];
+try{
+  const stored=JSON.parse(safeGet('vibnest_history','[]'));
+  if(Array.isArray(stored))items=stored;
+}catch(e){items=[]}
+
+function renderHistory(){
+  const body=$('historyTable');
+  body.replaceChildren();
+  $('emptyHistory').style.display=items.length?'none':'block';
+
+  items.forEach((item,index)=>{
+    const tr=document.createElement('tr');
+    const host=document.createElement('td');host.textContent=item.host;
+    const date=document.createElement('td');date.textContent=item.date;
+    const status=document.createElement('td');
+    const badge=document.createElement('span');
+    badge.className='badge';badge.textContent='Đã kiểm tra URL';status.appendChild(badge);
+    const action=document.createElement('td');
+    const remove=document.createElement('button');
+    remove.className='text-button';remove.textContent='Xóa';
+    remove.addEventListener('click',()=>{
+      items.splice(index,1);saveItems();
     });
+    action.appendChild(remove);
+    tr.append(host,date,status,action);body.appendChild(tr);
+  });
+  $('statLinks').textContent=String(items.length);
+}
+function saveItems(){
+  safeSet('vibnest_history',JSON.stringify(items));
+  renderHistory();
+}
+function clearHistory(){
+  if(!items.length)return;
+  if(confirm('Xóa toàn bộ lịch sử liên kết trên trình duyệt này?')){
+    items=[];saveItems();
+  }
+}
+renderHistory();
 
-    $('themeSelect').addEventListener('change', event => {
-      applyTheme(event.target.value);
-    });
+$('urlForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  $('urlNotice').classList.remove('show');
+  $('urlResult').classList.remove('show');
 
-    // Lịch sử liên kết: chỉ lưu URL trên trình duyệt hiện tại.
-    let historyItems = [];
+  try{
+    const url=new URL($('videoUrl').value.trim());
+    if(!['http:','https:'].includes(url.protocol))throw new Error('protocol');
 
-    try {
-      const saved = localStorage.getItem('vibnest_history');
-      historyItems = saved ? JSON.parse(saved) : [];
-      if (!Array.isArray(historyItems)) historyItems = [];
-    } catch (_) {
-      historyItems = [];
-    }
+    $('urlHost').textContent=url.hostname;
+    $('urlProtocol').textContent=url.protocol.replace(':','').toUpperCase();
+    $('urlResult').classList.add('show');
+    notice('urlNotice','URL có định dạng hợp lệ. Chưa xác minh video tồn tại và chưa tải tệp.');
+    items.unshift({host:url.hostname,date:new Date().toLocaleString('vi-VN')});
+    items=items.slice(0,100);
+    saveItems();
+  }catch(err){
+    notice('urlNotice','Liên kết chưa hợp lệ. Hãy kiểm tra URL và thử lại.');
+  }
+});
 
-    function saveHistory() {
-      try {
-        localStorage.setItem('vibnest_history', JSON.stringify(historyItems));
-      } catch (_) {
-        // Lịch sử vẫn hiển thị trong phiên hiện tại nếu lưu trữ bị chặn.
-      }
-
-      renderHistory();
-      updateStats();
-    }
-
-    function renderHistory() {
-      const table = $('historyTable');
-      table.replaceChildren();
-
-      $('emptyHistory').style.display = historyItems.length ? 'none' : 'block';
-
-      historyItems.forEach((item, index) => {
-        const row = document.createElement('tr');
-
-        const urlCell = document.createElement('td');
-        urlCell.textContent = item.host;
-
-        const dateCell = document.createElement('td');
-        dateCell.textContent = item.date;
-
-        const statusCell = document.createElement('td');
-        const badge = document.createElement('span');
-        badge.className = 'badge';
-        badge.textContent = 'Đã kiểm tra URL';
-        statusCell.appendChild(badge);
-
-        const actionCell = document.createElement('td');
-        const removeButton = document.createElement('button');
-        removeButton.className = 'link-btn';
-        removeButton.textContent = 'Xóa';
-        removeButton.addEventListener('click', () => {
-          historyItems.splice(index, 1);
-          saveHistory();
-        });
-        actionCell.appendChild(removeButton);
-
-        row.append(urlCell, dateCell, statusCell, actionCell);
-        table.appendChild(row);
-      });
-    }
-
-    function updateStats() {
-      $('totalDownloads').textContent = '0';
-      $('historyCount').textContent = String(historyItems.length);
-    }
-
-    function clearHistory() {
-      if (!historyItems.length) return;
-
-      if (confirm('Mày có chắc muốn xóa toàn bộ lịch sử liên kết không?')) {
-        historyItems = [];
-        saveHistory();
-      }
-    }
-
-    // Kiểm tra URL ở phía trình duyệt, chưa tải video thật.
-    $('downloadForm').addEventListener('submit', event => {
-      event.preventDefault();
-
-      const input = $('videoUrl').value.trim();
-      const notice = $('downloadNotice');
-      const result = $('linkResult');
-
-      notice.classList.remove('show');
-      result.classList.remove('show');
-
-      try {
-        const url = new URL(input);
-
-        if (!['http:', 'https:'].includes(url.protocol)) {
-          throw new Error('Chỉ chấp nhận liên kết HTTP hoặc HTTPS.');
-        }
-
-        $('resultHost').textContent = url.hostname;
-        result.classList.add('show');
-
-        historyItems.unshift({
-          host: url.hostname,
-          date: new Date().toLocaleString('vi-VN')
-        });
-
-        historyItems = historyItems.slice(0, 100);
-        saveHistory();
-
-        showNotice(
-          'downloadNotice',
-          'Đã kiểm tra cú pháp URL. Chưa xác nhận video tồn tại và chưa tải tệp.'
-        );
-      } catch (_) {
-        showNotice(
-          'downloadNotice',
-          'Liên kết chưa hợp lệ. Hãy kiểm tra lại URL, bao gồm https:// nếu cần.'
-        );
-      }
-    });
-
-    // Biểu mẫu tài khoản chưa nối backend.
-    $('loginForm').addEventListener('submit', event => {
-      event.preventDefault();
-
-      showNotice(
-        'loginNotice',
-        'Chưa kết nối hệ thống xác thực. Đăng nhập thật sẽ được bổ sung khi xây dựng backend.'
-      );
-    });
-
-    $('registerForm').addEventListener('submit', event => {
-      event.preventDefault();
-
-      showNotice(
-        'registerNotice',
-        'Biểu mẫu đã được kiểm tra. Chưa tạo tài khoản vì backend chưa được kết nối.'
-      );
-    });
-
-    renderHistory();
-    updateStats();
-  </script>
+// Demo-only forms: no credentials are stored or sent.
+$('loginForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  notice('loginNotice','Chưa kết nối dịch vụ xác thực. Chức năng đăng nhập thật sẽ được xây dựng ở giai đoạn backend.');
+});
+$('registerForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  if($('registerPassword').value!==$('registerConfirm').value){
+    notice('registerNotice','Mật khẩu xác nhận không khớp. Hãy kiểm tra lại.');
+    return;
+  }
+  notice('registerNotice','Biểu mẫu hợp lệ, nhưng chưa tạo tài khoản vì backend chưa được kết nối.');
+});
+$('forgotForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  notice('forgotNotice','Chức năng khôi phục mật khẩu cần backend và dịch vụ email. Chưa có email nào được gửi.');
+});
+</script>
 </body>
 </html>
