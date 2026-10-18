@@ -1,1308 +1,770 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#062544">
-<title>VidNest Admin</title>
-
-<style>
-:root {
-  --navy: #062544;
-  --blue: #0878e8;
-  --bg: #f2f7fc;
-  --white: #ffffff;
-  --text: #102b49;
-  --muted: #71849b;
-  --border: #e2ebf4;
-  --green: #0aaf78;
-  --red: #e65365;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-}
-
-button, input, select {
-  font: inherit;
-}
-
-button {
-  cursor: pointer;
-}
-
-.app {
-  min-height: 100vh;
-  display: flex;
-}
-
-/* SIDEBAR */
-
-.sidebar {
-  width: 235px;
-  flex-shrink: 0;
-  background: linear-gradient(180deg, #062544, #03182d);
-  color: white;
-  padding: 20px 14px;
-  display: flex;
-  flex-direction: column;
-}
-
-.brand {
-  font-size: 22px;
-  font-weight: 800;
-  padding: 8px 10px 28px;
-  letter-spacing: -.5px;
-}
-
-.brand span {
-  color: #49bfff;
-}
-
-.nav {
-  display: grid;
-  gap: 6px;
-}
-
-.nav button {
-  background: transparent;
-  color: #c6d7e8;
-  border: 0;
-  text-align: left;
-  padding: 13px;
-  border-radius: 9px;
-  font-size: 13px;
-}
-
-.nav button:hover,
-.nav button.active {
-  background: var(--blue);
-  color: white;
-}
-
-.profile {
-  margin-top: auto;
-  border-top: 1px solid #ffffff20;
-  padding: 18px 6px 4px;
-  font-size: 12px;
-  line-height: 1.7;
-}
-
-.profile small {
-  display: block;
-  color: #a9c0d8;
-}
-
-.main {
-  flex: 1;
-  min-width: 0;
-}
-
-/* HEADER */
-
-.topbar {
-  height: 70px;
-  background: white;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  padding: 0 25px;
-}
-
-.menu-toggle {
-  display: none;
-  border: 0;
-  background: #edf5fc;
-  padding: 10px 12px;
-  border-radius: 9px;
-}
-
-.search {
-  flex: 1;
-  max-width: 400px;
-}
-
-.search input {
-  width: 100%;
-  padding: 11px 15px;
-  border-radius: 25px;
-  border: 1px solid var(--border);
-  background: #f7faff;
-  outline-color: var(--blue);
-}
-
-.account {
-  margin-left: auto;
-  font-size: 12px;
-  font-weight: bold;
-  white-space: nowrap;
-}
-
-/* MAIN CONTENT */
-
-.content {
-  max-width: 1600px;
-  margin: auto;
-  padding: 26px;
-}
-
-.page {
-  display: none;
-}
-
-.page.active {
-  display: block;
-}
-
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 15px;
-  margin-bottom: 22px;
-}
-
-.page-header h1 {
-  font-size: 25px;
-  margin: 0 0 7px;
-}
-
-.page-header p {
-  font-size: 13px;
-  color: var(--muted);
-  margin: 0;
-}
-
-.card {
-  background: white;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  box-shadow: 0 5px 20px #163e5d08;
-  min-width: 0;
-}
-
-.stats {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 15px;
-  margin-bottom: 18px;
-}
-
-.stat {
-  padding: 19px;
-}
-
-.stat-label {
-  color: var(--muted);
-  font-size: 12px;
-}
-
-.stat-number {
-  font-size: 28px;
-  font-weight: 800;
-  margin: 14px 0 8px;
-  letter-spacing: -.5px;
-}
-
-.stat-change {
-  color: var(--green);
-  font-size: 11px;
-}
-
-.stat-change.warning {
-  color: var(--red);
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: 1.3fr 1fr;
-  gap: 18px;
-  margin-bottom: 18px;
-}
-
-.card-title {
-  padding: 18px 18px 0;
-  font-weight: 700;
-  font-size: 14px;
-}
-
-.card-body {
-  padding: 18px;
-}
-
-.chart {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
-.legend {
-  display: grid;
-  gap: 15px;
-}
-
-.legend div {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  font-size: 12px;
-}
-
-.dot {
-  display: inline-block;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: var(--blue);
-  margin-right: 8px;
-}
-
-/* BUTTONS */
-
-.btn {
-  background: var(--blue);
-  color: white;
-  border: 0;
-  border-radius: 9px;
-  padding: 11px 15px;
-  font-size: 12px;
-  font-weight: bold;
-}
-
-.btn:hover {
-  background: #0065c8;
-}
-
-.btn.secondary {
-  background: #edf5fc;
-  color: #315776;
-}
-
-.toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  padding: 16px;
-}
-
-.toolbar input,
-.toolbar select {
-  padding: 10px 12px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: white;
-  min-width: 0;
-}
-
-.toolbar input {
-  flex: 1;
-}
-
-/* TABLES */
-
-.table-wrap {
-  width: 100%;
-  overflow-x: auto;
-}
-
-table {
-  width: 100%;
-  min-width: 650px;
-  border-collapse: collapse;
-}
-
-th, td {
-  padding: 14px 16px;
-  border-top: 1px solid #edf2f8;
-  text-align: left;
-  font-size: 12px;
-  white-space: nowrap;
-}
-
-th {
-  background: #f8fbfe;
-  color: var(--muted);
-}
-
-.badge {
-  display: inline-block;
-  padding: 5px 9px;
-  border-radius: 20px;
-  background: #e8f3ff;
-  color: var(--blue);
-  font-size: 10px;
-  font-weight: bold;
-}
-
-.badge.green {
-  background: #e3fbf1;
-  color: #079768;
-}
-
-.badge.red {
-  background: #fff0f1;
-  color: #d84253;
-}
-
-.badge.orange {
-  background: #fff3e5;
-  color: #c77716;
-}
-
-.table-footer {
-  padding: 15px;
-  color: var(--muted);
-  font-size: 11px;
-}
-
-/* ROLE CARDS */
-
-.role-grid {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 12px;
-  margin-bottom: 18px;
-}
-
-.role-card {
-  padding: 20px 12px;
-  text-align: center;
-}
-
-.role-card h3 {
-  font-size: 13px;
-  margin: 0 0 8px;
-}
-
-.role-card p {
-  color: var(--muted);
-  font-size: 11px;
-  margin: 0;
-}
-
-/* SETTINGS */
-
-.form {
-  padding: 20px;
-}
-
-.field {
-  margin-bottom: 17px;
-}
-
-.field label {
-  display: block;
-  font-size: 12px;
-  font-weight: bold;
-  margin-bottom: 8px;
-}
-
-.field input {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-}
-
-/* NOTICE */
-
-.notice {
-  background: #eaf4ff;
-  color: #315776;
-  padding: 15px;
-  border-radius: 10px;
-  font-size: 12px;
-  line-height: 1.6;
-  margin-top: 18px;
-}
-
-/* MOBILE */
-
-.mobile-nav {
-  display: none;
-}
-
-@media (max-width: 1050px) {
-  .sidebar {
-    width: 205px;
-  }
-
-  .stats {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .role-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 700px) {
-  .app {
-    display: block;
-  }
-
-  .sidebar {
-    position: fixed;
-    z-index: 20;
-    inset: 0 auto 0 0;
-    width: 260px;
-    max-width: 85vw;
-    transform: translateX(-110%);
-    transition: transform .2s;
-    box-shadow: 10px 0 30px #00182d30;
-  }
-
-  .sidebar.open {
-    transform: translateX(0);
-  }
-
-  .menu-toggle {
-    display: block;
-  }
-
-  .topbar {
-    height: 62px;
-    padding: 0 12px;
-    gap: 9px;
-  }
-
-  .account {
-    display: none;
-  }
-
-  .content {
-    padding: 20px 12px 95px;
-  }
-
-  .page-header {
-    align-items: flex-start;
-  }
-
-  .page-header h1 {
-    font-size: 22px;
-  }
-
-  .page-header p {
-    line-height: 1.5;
-  }
-
-  .stats {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
-  }
-
-  .stat {
-    padding: 13px;
-  }
-
-  .stat-number {
-    font-size: 23px;
-  }
-
-  .grid {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-
-  .role-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
-  }
-
-  .toolbar input {
-    flex-basis: 100%;
-  }
-
-  .mobile-nav {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    position: fixed;
-    z-index: 10;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: white;
-    border-top: 1px solid var(--border);
-    padding: 9px 3px;
-    padding-bottom: calc(9px + env(safe-area-inset-bottom));
-  }
-
-  .mobile-nav button {
-    border: 0;
-    background: transparent;
-    color: #71849b;
-    font-size: 10px;
-    padding: 5px 0;
-  }
-
-  .mobile-nav button.active {
-    color: var(--blue);
-    font-weight: bold;
-  }
-
-  .mobile-nav span {
-    display: block;
-    font-size: 18px;
-    margin-bottom: 4px;
-  }
-}
-
-@media (max-width: 360px) {
-  .content {
-    padding-left: 9px;
-    padding-right: 9px;
-  }
-
-  .stat {
-    padding: 10px;
-  }
-
-  .stat-number {
-    font-size: 21px;
-  }
-
-  .page-header h1 {
-    font-size: 20px;
-  }
-
-  .role-grid {
-    gap: 7px;
-  }
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#062544">
+  <title>VidNest Admin</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root {
+      --navy: #062544;
+      --blue: #0878e8;
+      --bg: #f2f7fc;
+      --text: #102b49;
+      --muted: #71849b;
+      --border: #e2ebf4;
+      --red: #e65365;
+      --green: #0aaf78;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+
+    .hidden { display: none !important; }
+
+    .login-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: linear-gradient(135deg, #0878e8, #062544 65%, #03182d);
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 420px;
+      padding: 32px;
+      border-radius: 20px;
+      background: white;
+      box-shadow: 0 25px 80px #00132655;
+    }
+
+    .brand {
+      font-size: 27px;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 10px;
+    }
+
+    .brand span { color: var(--blue); }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    h1 { font-size: 23px; }
+
+    .field { margin: 20px 0; }
+
+    .field label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      outline-color: var(--blue);
+    }
+
+    .btn {
+      padding: 12px 16px;
+      border: 0;
+      border-radius: 9px;
+      background: var(--blue);
+      color: white;
+      font-weight: bold;
+    }
+
+    .btn:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    .login-card .btn { width: 100%; }
+
+    .message {
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: 9px;
+      background: #eaf4ff;
+      color: #315776;
+      font-size: 13px;
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+    }
+
+    .message.error {
+      color: #a32636;
+      background: #fff0f1;
+    }
+
+    .message.success {
+      color: #087d59;
+      background: #e3fbf1;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: flex;
+    }
+
+    .sidebar {
+      width: 240px;
+      flex-shrink: 0;
+      padding: 22px 16px;
+      color: white;
+      background: linear-gradient(180deg, #062544, #03182d);
+    }
+
+    .sidebar .brand { color: white; }
+
+    .nav button {
+      display: block;
+      width: 100%;
+      margin: 7px 0;
+      padding: 13px;
+      text-align: left;
+      border: 0;
+      border-radius: 9px;
+      color: #d6e6f5;
+      background: transparent;
+    }
+
+    .nav button:hover,
+    .nav button.active {
+      color: white;
+      background: var(--blue);
+    }
+
+    .profile {
+      margin-top: 30px;
+      padding-top: 18px;
+      border-top: 1px solid #ffffff30;
+      font-size: 12px;
+      line-height: 1.8;
+      overflow-wrap: anywhere;
+    }
+
+    .profile small {
+      display: block;
+      color: #a9c0d8;
+    }
+
+    .main {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .topbar {
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 15px 25px;
+      background: white;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .content {
+      max-width: 1400px;
+      margin: auto;
+      padding: 26px;
+    }
+
+    .page-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    .page-title h1 { margin: 0; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 15px;
+    }
+
+    .card {
+      padding: 20px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: 0 5px 20px #163e5d08;
+      min-width: 0;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .stat-number {
+      margin-top: 14px;
+      font-size: 29px;
+      font-weight: 800;
+      overflow-wrap: anywhere;
+    }
+
+    .section { margin-top: 22px; }
+
+    .section h2 { font-size: 17px; }
+
+    .table-wrap {
+      overflow-x: auto;
+      background: white;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    table {
+      width: 100%;
+      min-width: 600px;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
+
+    th {
+      background: #f8fbfe;
+      color: var(--muted);
+    }
+
+    .empty {
+      color: var(--muted);
+      text-align: center;
+      padding: 24px;
+    }
+
+    .logout {
+      background: #fff0f1;
+      color: #b52b3b;
+    }
+
+    @media (max-width: 900px) {
+      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .sidebar { width: 200px; }
+      .content { padding: 18px; }
+    }
+
+    @media (max-width: 600px) {
+      .app { display: block; }
+      .sidebar { width: 100%; }
+      .sidebar .profile { margin-top: 15px; }
+      .nav { display: flex; flex-wrap: wrap; }
+      .nav button { width: auto; }
+      .topbar { padding: 14px; }
+      .content { padding: 14px; }
+      .stats { gap: 10px; }
+      .card { padding: 14px; }
+      .stat-number { font-size: 23px; }
+      .page-title { align-items: flex-start; }
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="app">
-
-<aside class="sidebar" id="sidebar">
-  <div class="brand"><span>▶</span> VidNest</div>
-
-  <nav class="nav">
-    <button class="active" data-page="overview">⌂ &nbsp; Tổng quan</button>
-    <button data-page="users">♙ &nbsp; Quản lý người dùng</button>
-    <button data-page="roles">♧ &nbsp; Phân quyền</button>
-    <button data-page="logs">▣ &nbsp; Nhật ký hoạt động</button>
-    <button data-page="settings">⚙ &nbsp; Cài đặt</button>
-  </nav>
-
-  <div class="profile">
-    <strong>Super Admin</strong>
-    <small>admin@vidnest.com</small>
-  </div>
-</aside>
-
-<main class="main">
-
-<header class="topbar">
-  <button class="menu-toggle" id="menuToggle">☰</button>
-
-  <div class="search">
-    <input id="globalSearch" placeholder="Tìm kiếm...">
-  </div>
-
-  <div class="account">Super Admin　⌄</div>
-</header>
-
-<div class="content">
-
-<!-- TỔNG QUAN -->
-
-<section class="page active" id="page-overview">
-
-  <div class="page-header">
-    <div>
-      <h1>Tổng quan</h1>
-      <p>Chào mừng trở lại! Đây là tình hình hệ thống VidNest.</p>
-    </div>
-  </div>
-
-  <div class="stats">
-
-    <article class="card stat">
-  <div class="stat-label">Tổng tài khoản</div>
-  <div class="stat-number" id="totalUsers">—</div>
-  <div class="stat-change">Dữ liệu từ Supabase</div>
-</article>
-
-<article class="card stat">
-  <div class="stat-label">Đăng ký hôm nay</div>
-  <div class="stat-number" id="newUsersToday">—</div>
-  <div class="stat-change">Tài khoản mới trong ngày</div>
-</article>
-
-<article class="card stat">
-  <div class="stat-label">Lượt tải thành công</div>
-  <div class="stat-number" id="successfulDownloads">—</div>
-  <div class="stat-change">Tổng lượt tải đã ghi nhận</div>
-</article>
-
-<article class="card stat">
-  <div class="stat-label">Lượt tải thất bại</div>
-  <div class="stat-number" id="failedDownloads">—</div>
-  <div class="stat-change warning">Tổng lượt tải lỗi đã ghi nhận</div>
-</article>
-
-  </div>
-
-  <div class="grid">
-
-    <article class="card">
-      <div class="card-title">Thống kê người dùng</div>
-      <div class="card-body">
-
-        <svg class="chart" viewBox="0 0 500 210"
-             role="img" aria-label="Biểu đồ minh họa người dùng">
-
-          <g stroke="#e6eef6" stroke-width="1">
-            <path d="M35 20H490 M35 60H490 M35 100H490 M35 140H490 M35 180H490"/>
-          </g>
-
-          <path d="M35 160 L105 150 L175 120 L245 132 L315 85 L385 95 L490 35"
-                fill="none" stroke="#0878e8" stroke-width="3"
-                stroke-linecap="round" stroke-linejoin="round"/>
-
-          <path d="M35 160 L105 150 L175 120 L245 132 L315 85 L385 95 L490 35 L490 180 L35 180Z"
-                fill="#0878e8" opacity=".08"/>
-
-          <g fill="#0878e8">
-            <circle cx="35" cy="160" r="4"/>
-            <circle cx="105" cy="150" r="4"/>
-            <circle cx="175" cy="120" r="4"/>
-            <circle cx="245" cy="132" r="4"/>
-            <circle cx="315" cy="85" r="4"/>
-            <circle cx="385" cy="95" r="4"/>
-            <circle cx="490" cy="35" r="4"/>
-          </g>
-
-          <g fill="#71849b" font-size="11">
-            <text x="30" y="200">19/04</text>
-            <text x="105" y="200">20/04</text>
-            <text x="175" y="200">21/04</text>
-            <text x="245" y="200">22/04</text>
-            <text x="315" y="200">23/04</text>
-            <text x="385" y="200">24/04</text>
-            <text x="455" y="200">25/04</text>
-          </g>
-
-        </svg>
-
-      </div>
-    </article>
-
-    <article class="card">
-      <div class="card-title">Phân bố tài khoản theo vai trò</div>
-
-      <div class="card-body">
-        <div class="legend">
-          <div><span><i class="dot"></i>User</span><b>68.2%</b></div>
-          <div><span><i class="dot" style="background:#12b9a6"></i>Moderator</span><b>12.4%</b></div>
-          <div><span><i class="dot" style="background:#e85b91"></i>Admin</span><b>8.7%</b></div>
-          <div><span><i class="dot" style="background:#ff9b43"></i>Support</span><b>6.1%</b></div>
-          <div><span><i class="dot" style="background:#8d73ef"></i>Super Admin</span><b>4.6%</b></div>
-        </div>
-      </div>
-    </article>
-
-  </div>
-
-  <div class="grid">
-
-    <article class="card">
-      <div class="card-title">Hoạt động gần đây</div>
-      <div class="card-body">
-        <p style="font-size:12px">♙　Người dùng mới đăng ký</p>
-        <p style="font-size:12px">▶　Video mới được đăng</p>
-        <p style="font-size:12px">⚠　Tài khoản bị khóa</p>
-      </div>
-    </article>
-
-    <article class="card">
-      <div class="card-title">Trạng thái hệ thống</div>
-      <div class="card-body">
-        <p style="font-size:12px">Cơ sở dữ liệu <span class="badge green">Mẫu</span></p>
-        <p style="font-size:12px">Xác thực người dùng <span class="badge green">Mẫu</span></p>
-        <p style="font-size:12px">API dịch vụ <span class="badge orange">Chưa kiểm tra</span></p>
-      </div>
-    </article>
-
-  </div>
-
-  <div class="notice">
-    Đây là dữ liệu minh họa. Các con số chưa được lấy từ Supabase.
-  </div>
-
-</section>
-
-<!-- QUẢN LÝ NGƯỜI DÙNG -->
-
-<section class="page" id="page-users">
-
-  <div class="page-header">
-    <div>
-      <h1>Quản lý người dùng</h1>
-      <p>Tìm kiếm và xem thông tin tài khoản.</p>
-    </div>
-    <button class="btn" id="addUser">＋ Thêm người dùng</button>
-  </div>
-
-  <article class="card">
-
-    <div class="toolbar">
-      <input id="userSearch" placeholder="Tìm tên hoặc email...">
-
-      <select id="roleFilter">
-        <option value="">Tất cả vai trò</option>
-        <option>User</option>
-        <option>Moderator</option>
-        <option>Admin</option>
-        <option>Support</option>
-      </select>
-
-      <select id="statusFilter">
-        <option value="">Tất cả trạng thái</option>
-        <option>Hoạt động</option>
-        <option>Bị khóa</option>
-      </select>
-    </div>
-
-    <div class="table-wrap">
-      <table id="usersTable">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Người dùng</th>
-            <th>Email</th>
-            <th>Vai trò</th>
-            <th>Trạng thái</th>
-          </tr>
-        </thead>
-
-        <tbody>
-
-          <tr data-role="User" data-status="Hoạt động">
-            <td>#1001</td>
-            <td>Nguyễn Văn A</td>
-            <td>a@example.com</td>
-            <td><span class="badge">User</span></td>
-            <td><span class="badge green">Hoạt động</span></td>
-          </tr>
-
-          <tr data-role="Moderator" data-status="Hoạt động">
-            <td>#1002</td>
-            <td>Trần Thị B</td>
-            <td>b@example.com</td>
-            <td><span class="badge">Moderator</span></td>
-            <td><span class="badge green">Hoạt động</span></td>
-          </tr>
-
-          <tr data-role="Admin" data-status="Hoạt động">
-            <td>#1003</td>
-            <td>Lê Văn C</td>
-            <td>c@example.com</td>
-            <td><span class="badge orange">Admin</span></td>
-            <td><span class="badge green">Hoạt động</span></td>
-          </tr>
-
-          <tr data-role="Support" data-status="Hoạt động">
-            <td>#1004</td>
-            <td>Phạm Thị D</td>
-            <td>d@example.com</td>
-            <td><span class="badge">Support</span></td>
-            <td><span class="badge green">Hoạt động</span></td>
-          </tr>
-
-          <tr data-role="User" data-status="Bị khóa">
-            <td>#1005</td>
-            <td>Hoàng Văn E</td>
-            <td>e@example.com</td>
-            <td><span class="badge">User</span></td>
-            <td><span class="badge red">Bị khóa</span></td>
-          </tr>
-
-        </tbody>
-      </table>
-    </div>
-
-    <div class="table-footer" id="userCount">
-      Hiển thị 5 tài khoản mẫu
-    </div>
-
-  </article>
-
-  <div class="notice">
-    Danh sách này chưa phải tài khoản thật. Chức năng thêm, khóa,
-    xóa hoặc đổi quyền cần kết nối backend trước khi sử dụng.
-  </div>
-
-</section>
-
-<!-- PHÂN QUYỀN -->
-
-<section class="page" id="page-roles">
-
-  <div class="page-header">
-    <div>
-      <h1>Phân quyền hệ thống</h1>
-      <p>Các cấp quyền quản trị VidNest.</p>
-    </div>
-  </div>
-
-  <div class="role-grid">
-
-    <article class="card role-card">
-      <h3>♛ Super Admin</h3>
-      <p>Quản lý toàn hệ thống</p>
-    </article>
-
-    <article class="card role-card">
-      <h3>♙ Admin</h3>
-      <p>Quản lý người dùng</p>
-    </article>
-
-    <article class="card role-card">
-      <h3>◈ Moderator</h3>
-      <p>Kiểm duyệt nội dung</p>
-    </article>
-
-    <article class="card role-card">
-      <h3>☏ Support</h3>
-      <p>Hỗ trợ người dùng</p>
-    </article>
-
-    <article class="card role-card">
-      <h3>♙ User</h3>
-      <p>Tài khoản thông thường</p>
-    </article>
-
-  </div>
-
-  <article class="card">
-    <div class="card-title">Ma trận quyền hạn</div>
-
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Chức năng</th>
-            <th>Super Admin</th>
-            <th>Admin</th>
-            <th>Moderator</th>
-            <th>Support</th>
-            <th>User</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <tr><td>Quản lý người dùng</td><td>✓</td><td>✓</td><td>—</td><td>Hạn chế</td><td>—</td></tr>
-          <tr><td>Thay đổi vai trò</td><td>✓</td><td>Hạn chế</td><td>—</td><td>—</td><td>—</td></tr>
-          <tr><td>Kiểm duyệt nội dung</td><td>✓</td><td>✓</td><td>✓</td><td>—</td><td>—</td></tr>
-          <tr><td>Xem nhật ký</td><td>✓</td><td>✓</td><td>Hạn chế</td><td>Hạn chế</td><td>—</td></tr>
-          <tr><td>Cài đặt hệ thống</td><td>✓</td><td>Hạn chế</td><td>—</td><td>—</td><td>—</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </article>
-
-  <div class="notice">
-    Bảng trên chỉ mô tả thiết kế quyền hạn, chưa thực thi quyền trên máy chủ.
-  </div>
-
-</section>
-
-<!-- NHẬT KÝ -->
-
-<section class="page" id="page-logs">
-
-  <div class="page-header">
-    <div>
-      <h1>Nhật ký hoạt động</h1>
-      <p>Theo dõi các hoạt động quản trị.</p>
-    </div>
-    <button class="btn secondary" id="exportLogs">Xuất CSV</button>
-  </div>
-
-  <article class="card">
-
-    <div class="toolbar">
-      <input id="logSearch" placeholder="Tìm hoạt động...">
-    </div>
-
-    <div class="table-wrap">
-      <table id="logsTable">
-        <thead>
-          <tr>
-            <th>Thời gian</th>
-            <th>Người thực hiện</th>
-            <th>Hành động</th>
-            <th>Chi tiết</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <tr>
-            <td>25/04/2025 14:32</td>
-            <td>admin@vidnest.com</td>
-            <td><span class="badge green">Đăng nhập</span></td>
-            <td>Đăng nhập thành công</td>
-          </tr>
-
-          <tr>
-            <td>25/04/2025 13:46</td>
-            <td>moderator@vidnest.com</td>
-            <td><span class="badge">Kiểm duyệt</span></td>
-            <td>Kiểm duyệt nội dung mẫu</td>
-          </tr>
-
-          <tr>
-            <td>25/04/2025 12:20</td>
-            <td>support@vidnest.com</td>
-            <td><span class="badge orange">Hỗ trợ</span></td>
-            <td>Tiếp nhận yêu cầu mẫu</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-  </article>
-
-  <div class="notice">
-    Nhật ký hiện tại là dữ liệu mẫu, chưa lấy từ hoạt động thật.
-  </div>
-
-</section>
-
-<!-- CÀI ĐẶT -->
-
-<section class="page" id="page-settings">
-
-  <div class="page-header">
-    <div>
-      <h1>Cài đặt hệ thống</h1>
-      <p>Thông tin chung của website VidNest.</p>
-    </div>
-  </div>
-
-  <article class="card">
-
-    <form class="form" id="settingsForm">
+  <!-- MÀN HÌNH ĐĂNG NHẬP -->
+  <section id="loginScreen" class="login-screen">
+    <form id="loginForm" class="login-card">
+      <div class="brand"><span>▶</span> VidNest</div>
+
+      <p class="subtitle">
+        Cổng quản trị hệ thống VidNest.
+        Chỉ tài khoản được cấp quyền quản trị mới được phép truy cập.
+      </p>
+
+      <h1>Đăng nhập Admin</h1>
 
       <div class="field">
-        <label for="siteName">Tên website</label>
-        <input id="siteName" value="VidNest" required>
+        <label for="email">Email</label>
+        <input
+          id="email"
+          type="email"
+          autocomplete="username"
+          placeholder="Nhập email"
+          required
+        >
       </div>
 
       <div class="field">
-        <label for="siteDescription">Mô tả website</label>
-        <input id="siteDescription"
-               value="Nền tảng video hiện đại">
+        <label for="password">Mật khẩu</label>
+        <input
+          id="password"
+          type="password"
+          autocomplete="current-password"
+          placeholder="Nhập mật khẩu"
+          required
+        >
       </div>
 
-      <div class="field">
-        <label for="supportEmail">Email hỗ trợ</label>
-        <input id="supportEmail"
-               type="email"
-               value="support@vidnest.com">
+      <button id="loginButton" class="btn" type="submit">
+        Đăng nhập
+      </button>
+
+      <div id="loginMessage" class="message" role="status">
+        Đăng nhập bằng tài khoản VidNest đã đăng ký.
       </div>
 
-      <div class="field">
-        <label for="siteUrl">URL website</label>
-        <input id="siteUrl"
-               type="url"
-               value="https://chinhly212.github.io/VidNest/">
-      </div>
-
-      <button class="btn" type="submit">Lưu thay đổi</button>
-
+      <p class="subtitle">
+        Quyền Admin phải được cấp riêng trong cơ sở dữ liệu.
+        Không thể tự cấp quyền từ màn hình đăng nhập.
+      </p>
     </form>
+  </section>
 
-  </article>
+  <!-- BẢNG ĐIỀU KHIỂN -->
+  <div id="adminApp" class="app hidden">
 
-  <div class="notice">
-    Bản hiện tại chưa lưu cài đặt vào Supabase.
+    <aside class="sidebar">
+      <div class="brand"><span>▶</span> VidNest</div>
+
+      <nav class="nav">
+        <button class="active" data-page="overview">⌂ Tổng quan</button>
+        <button data-page="users">♙ Người dùng</button>
+        <button data-page="logs">▣ Nhật ký hoạt động</button>
+      </nav>
+
+      <div class="profile">
+        <strong id="adminName">Quản trị viên</strong>
+        <small id="adminEmail"></small>
+        <button id="logoutButton" class="btn logout" style="margin-top:12px">
+          Đăng xuất
+        </button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <strong>VidNest Admin Dashboard</strong>
+        <button id="refreshButton" class="btn">Làm mới</button>
+      </header>
+
+      <div class="content">
+
+        <section id="page-overview">
+          <div class="page-title">
+            <div>
+              <h1>Tổng quan</h1>
+              <p class="subtitle">Thống kê từ backend VidNest.</p>
+            </div>
+          </div>
+
+          <div class="stats">
+            <article class="card">
+              <div class="stat-label">Tổng tài khoản</div>
+              <div id="totalUsers" class="stat-number">—</div>
+            </article>
+
+            <article class="card">
+              <div class="stat-label">Đăng ký hôm nay</div>
+              <div id="newUsersToday" class="stat-number">—</div>
+            </article>
+
+            <article class="card">
+              <div class="stat-label">Tải thành công</div>
+              <div id="successfulDownloads" class="stat-number">—</div>
+            </article>
+
+            <article class="card">
+              <div class="stat-label">Tải thất bại</div>
+              <div id="failedDownloads" class="stat-number">—</div>
+            </article>
+          </div>
+
+          <section class="section card">
+            <h2>Trạng thái hệ thống</h2>
+            <div id="systemStatus" class="subtitle">
+              Đang chờ dữ liệu từ backend...
+            </div>
+            <div id="dashboardMessage" class="message">
+              Chưa tải dữ liệu.
+            </div>
+          </section>
+        </section>
+
+        <section id="page-users" class="section hidden">
+          <h1>Quản lý người dùng</h1>
+
+          <div class="card" style="margin:18px 0">
+            <input
+              id="userSearch"
+              type="search"
+              placeholder="Tìm email hoặc ID..."
+              style="width:100%;padding:12px;border:1px solid #e2ebf4;border-radius:8px"
+            >
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Email</th>
+                  <th>Ngày tạo</th>
+                  <th>Vai trò</th>
+                  <th>Trạng thái</th>
+                </tr>
+              </thead>
+              <tbody id="usersBody">
+                <tr><td colspan="5" class="empty">Chưa có dữ liệu.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="page-logs" class="section hidden">
+          <h1>Nhật ký hoạt động</h1>
+
+          <div class="table-wrap" style="margin-top:18px">
+            <table>
+              <thead>
+                <tr>
+                  <th>Thời gian</th>
+                  <th>Người dùng</th>
+                  <th>Hoạt động</th>
+                  <th>Chi tiết</th>
+                </tr>
+              </thead>
+              <tbody id="logsBody">
+                <tr><td colspan="4" class="empty">Chưa có nhật ký.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+      </div>
+    </main>
   </div>
 
-</section>
+  <script>
+    // Cấu hình Supabase của dự án VidNest.
+    const SUPABASE_URL =
+      "https://xztwgjuherkqdvebkovz.supabase.co";
 
-</div>
+    const SUPABASE_PUBLISHABLE_KEY =
+      "sb_publishable_F5BitF69W3Tz1pPO-T-Y_A_TToc4t9n";
 
-<!-- THANH ĐIỀU HƯỚNG ĐIỆN THOẠI -->
+    // Tên Edge Function kiểm tra quyền và lấy dữ liệu quản trị.
+    const FUNCTION_NAME = "admin-stats";
 
-<nav class="mobile-nav">
+    const supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_PUBLISHABLE_KEY,
+      {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true
+        }
+      }
+    );
 
-  <button class="active" data-page="overview">
-    <span>⌂</span>Tổng quan
-  </button>
+    const $ = id => document.getElementById(id);
 
-  <button data-page="users">
-    <span>♙</span>Người dùng
-  </button>
+    let usersData = [];
 
-  <button data-page="roles">
-    <span>♧</span>Phân quyền
-  </button>
-
-  <button data-page="logs">
-    <span>▣</span>Nhật ký
-  </button>
-
-  <button data-page="settings">
-    <span>⚙</span>Cài đặt
-  </button>
-
-</nav>
-
-</main>
-</div>
-
-<script>
-const sidebar = document.getElementById("sidebar");
-
-function showPage(name) {
-  document.querySelectorAll(".page").forEach(page => {
-    page.classList.toggle("active", page.id === "page-" + name);
-  });
-
-  document.querySelectorAll("[data-page]").forEach(button => {
-    button.classList.toggle("active", button.dataset.page === name);
-  });
-
-  sidebar.classList.remove("open");
-  window.scrollTo({ top: 0, behavior: "smooth" });
-}
-
-document.querySelectorAll("[data-page]").forEach(button => {
-  button.addEventListener("click", () => {
-    showPage(button.dataset.page);
-  });
-});
-
-document.getElementById("menuToggle").addEventListener("click", () => {
-  sidebar.classList.toggle("open");
-});
-
-/* Tìm kiếm và lọc tài khoản mẫu */
-
-function filterUsers() {
-  const query = document.getElementById("userSearch")
-    .value.toLowerCase();
-
-  const role = document.getElementById("roleFilter").value;
-  const status = document.getElementById("statusFilter").value;
-
-  let count = 0;
-
-  document.querySelectorAll("#usersTable tbody tr").forEach(row => {
-    const matchesQuery = row.innerText.toLowerCase().includes(query);
-    const matchesRole = !role || row.dataset.role === role;
-    const matchesStatus = !status || row.dataset.status === status;
-
-    const visible = matchesQuery && matchesRole && matchesStatus;
-
-    row.hidden = !visible;
-
-    if (visible) count++;
-  });
-
-  document.getElementById("userCount").textContent =
-    "Hiển thị " + count + " tài khoản mẫu";
-}
-
-["userSearch", "roleFilter", "statusFilter"].forEach(id => {
-  document.getElementById(id).addEventListener("input", filterUsers);
-  document.getElementById(id).addEventListener("change", filterUsers);
-});
-
-/* Tìm kiếm nhanh */
-
-document.getElementById("globalSearch").addEventListener("keydown", event => {
-  if (event.key === "Enter") {
-    showPage("users");
-    document.getElementById("userSearch").value = event.target.value;
-    filterUsers();
-  }
-});
-
-/* Tìm kiếm nhật ký mẫu */
-
-document.getElementById("logSearch").addEventListener("input", event => {
-  const query = event.target.value.toLowerCase();
-
-  document.querySelectorAll("#logsTable tbody tr").forEach(row => {
-    row.hidden = !row.innerText.toLowerCase().includes(query);
-  });
-});
-
-/* Xuất nhật ký CSV mẫu */
-
-document.getElementById("exportLogs").addEventListener("click", () => {
-  const rows = [...document.querySelectorAll("#logsTable tr")]
-    .filter(row => !row.hidden)
-    .map(row => [...row.children].map(cell =>
-      '"' + cell.innerText.replaceAll('"', '""') + '"'
-    ).join(","));
-
-  const csv = "\uFEFF" + rows.join("\r\n");
-  const blob = new Blob([csv], {
-    type: "text/csv;charset=utf-8;"
-  });
-
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-
-  link.href = url;
-  link.download = "vidnest-admin-demo.csv";
-  link.click();
-
-  URL.revokeObjectURL(url);
-});
-
-/* Cài đặt mẫu */
-
-document.getElementById("settingsForm").addEventListener("submit", event => {
-  event.preventDefault();
-  alert("Đã kiểm tra biểu mẫu. Chưa lưu dữ liệu lên máy chủ.");
-});
-
-/* Các thao tác chưa kết nối backend */
-
-document.getElementById("addUser").addEventListener("click", () => {
-  alert("Chức năng thêm người dùng cần được kết nối Supabase.");
-});
-</script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script>
-(async function initVidNestStats() {
-  const SUPABASE_URL = "https://xztwgjuherkqdvebkovz.supabase.co";
-
-  // Dùng publishable key của dự án Supabase.
- const SUPABASE_KEY = "sb_publishable_F5BitF69W3Tz1pPO-T-Y_A_TToc4t9n";
-  const numberIds = [
-    "totalUsers",
-    "newUsersToday",
-    "successfulDownloads",
-    "failedDownloads"
-  ];
-
-  function showError(message) {
-    numberIds.forEach(id => {
-      const element = document.getElementById(id);
-      if (element) element.textContent = "—";
-    });
-
-    let notice = document.getElementById("statsError");
-
-    if (!notice) {
-      notice = document.createElement("div");
-      notice.id = "statsError";
-      notice.className = "notice";
-
-      const overview = document.getElementById("page-overview");
-      overview.appendChild(notice);
+    function showMessage(id, message, type = "") {
+      const element = $(id);
+      element.textContent = message;
+      element.className = "message " + type;
     }
 
-    notice.textContent = message;
-  }
+    function showLogin(message = "") {
+      $("adminApp").classList.add("hidden");
+      $("loginScreen").classList.remove("hidden");
 
-  if (!window.supabase) {
-    showError("Không tải được thư viện Supabase.");
-    return;
-  }
+      if (message) {
+        showMessage("loginMessage", message, "error");
+      }
+    }
 
-  const client = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
+    function showAdmin() {
+      $("loginScreen").classList.add("hidden");
+      $("adminApp").classList.remove("hidden");
+    }
 
-  async function loadStats() {
-    try {
+    function escapeHTML(value) {
+      return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      })[char]);
+    }
+
+    function formatDate(value) {
+      if (!value) return "—";
+
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return "—";
+
+      return date.toLocaleString("vi-VN");
+    }
+
+    function renderStats(stats = {}) {
+      $("totalUsers").textContent =
+        Number(stats.totalUsers ?? 0).toLocaleString("vi-VN");
+
+      $("newUsersToday").textContent =
+        Number(stats.newUsersToday ?? 0).toLocaleString("vi-VN");
+
+      $("successfulDownloads").textContent =
+        Number(stats.successfulDownloads ?? 0).toLocaleString("vi-VN");
+
+      $("failedDownloads").textContent =
+        Number(stats.failedDownloads ?? 0).toLocaleString("vi-VN");
+    }
+
+    function renderUsers(users) {
+      usersData = Array.isArray(users) ? users : [];
+
+      const body = $("usersBody");
+
+      if (!usersData.length) {
+        body.innerHTML =
+          '<tr><td colspan="5" class="empty">Backend chưa trả về tài khoản nào.</td></tr>';
+        return;
+      }
+
+      body.innerHTML = usersData.map(user => {
+        const role = user.role || "user";
+        const status = user.status || "active";
+
+        return `
+          <tr>
+            <td title="${escapeHTML(user.id)}">
+              ${escapeHTML(String(user.id || "").slice(0, 8) || "—")}
+            </td>
+            <td>${escapeHTML(user.email || "—")}</td>
+            <td>${escapeHTML(formatDate(user.created_at))}</td>
+            <td>${escapeHTML(role)}</td>
+            <td>${escapeHTML(status)}</td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function renderLogs(logs) {
+      const body = $("logsBody");
+
+      if (!Array.isArray(logs) || !logs.length) {
+        body.innerHTML =
+          '<tr><td colspan="4" class="empty">Chưa có nhật ký được trả về.</td></tr>';
+        return;
+      }
+
+      body.innerHTML = logs.map(log => {
+        const details = typeof log.details === "object"
+          ? JSON.stringify(log.details)
+          : log.details || "—";
+
+        return `
+          <tr>
+            <td>${escapeHTML(formatDate(log.created_at || log.timestamp))}</td>
+            <td>${escapeHTML(log.email || log.user_id || "—")}</td>
+            <td>${escapeHTML(log.action || log.status || "Hoạt động")}</td>
+            <td>${escapeHTML(details)}</td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    async function loadAdminData() {
       const {
         data: { session },
         error: sessionError
-      } = await client.auth.getSession();
+      } = await supabaseClient.auth.getSession();
 
-      if (sessionError || !session) {
-        showError(
-          "Chưa đăng nhập. Hãy đăng nhập VidNest trước khi xem thống kê."
-        );
+      if (sessionError) throw sessionError;
+
+      if (!session) {
+        showLogin();
         return;
       }
 
-      const { data, error } = await client.functions.invoke(
-        "admin-stats",
+      $("adminEmail").textContent = session.user.email || "";
+      $("adminName").textContent = "Đang xác minh quyền...";
+      $("systemStatus").textContent = "Đang xác minh quyền quản trị...";
+
+      // Backend bắt buộc kiểm tra quyền Admin.
+      // Không tin role do trình duyệt tự gửi lên.
+      const { data, error } = await supabaseClient.functions.invoke(
+        FUNCTION_NAME,
         {
-          method: "POST"
+          body: { action: "dashboard" }
         }
       );
 
-      if (error) {
-        console.error("admin-stats:", error);
-        showError(
-          "Không lấy được số liệu. Hãy kiểm tra Function admin-stats và phiên đăng nhập."
+      if (error) throw error;
+
+      if (!data || data.success !== true) {
+        throw new Error(
+          data?.error || "Backend chưa xác nhận quyền quản trị."
         );
-        return;
       }
 
-      if (!data || !data.success) {
-        showError(
-          data?.message || "Không thể tải dữ liệu quản trị."
-        );
-        return;
-      }
+      showAdmin();
 
-      const stats = data.stats || {};
+      $("adminName").textContent = "Quản trị viên";
+      $("systemStatus").textContent =
+        "Phiên đăng nhập và API đã được xác minh.";
 
-      document.getElementById("totalUsers").textContent =
-        Number(stats.totalUsers ?? 0).toLocaleString("vi-VN");
+      renderStats(data.stats || {});
+      renderUsers(data.users || []);
+      renderLogs(data.recentActivity || data.logs || []);
 
-      document.getElementById("newUsersToday").textContent =
-        Number(stats.newUsersToday ?? 0).toLocaleString("vi-VN");
-
-      document.getElementById("successfulDownloads").textContent =
-        Number(stats.successfulDownloads ?? 0).toLocaleString("vi-VN");
-
-      document.getElementById("failedDownloads").textContent =
-        Number(stats.failedDownloads ?? 0).toLocaleString("vi-VN");
-
-      const errorNotice = document.getElementById("statsError");
-      if (errorNotice) errorNotice.remove();
-
-      let updated = document.getElementById("statsUpdatedAt");
-
-      if (!updated) {
-        updated = document.createElement("p");
-        updated.id = "statsUpdatedAt";
-        updated.style.cssText =
-          "font-size:11px;color:#71849b;margin-top:12px";
-
-        document.getElementById("page-overview").appendChild(updated);
-      }
-
-      updated.textContent =
-        "Cập nhật lần cuối: " +
-        new Date(data.updatedAt || Date.now()).toLocaleString("vi-VN");
-
-    } catch (error) {
-      console.error(error);
-      showError("Có lỗi khi kết nối Supabase.");
+      showMessage(
+        "dashboardMessage",
+        "Đã nhận dữ liệu từ backend. Thời điểm cập nhật: " +
+          formatDate(data.updatedAt || data.generatedAt || new Date()),
+        "success"
+      );
     }
-  }
 
-  await loadStats();
+    $("loginForm").addEventListener("submit", async event => {
+      event.preventDefault();
 
-  // Tự làm mới mỗi 30 giây.
-  setInterval(loadStats, 30000);
-})();
-</script>
+      const button = $("loginButton");
+      button.disabled = true;
+      button.textContent = "Đang đăng nhập...";
+
+      try {
+        const email = $("email").value.trim();
+        const password = $("password").value;
+
+        const { error } = await supabaseClient.auth.signInWithPassword({
+          email,
+          password
+        });
+
+        if (error) throw error;
+
+        showMessage(
+          "loginMessage",
+          "Đăng nhập thành công. Đang kiểm tra quyền quản trị...",
+          "success"
+        );
+
+        await loadAdminData();
+
+      } catch (error) {
+        console.error("VidNest login:", error);
+
+        showLogin(
+          "Không thể vào Admin: " +
+          (error.message || "Lỗi không xác định") +
+          ". Kiểm tra tài khoản và Edge Function admin-stats."
+        );
+
+      } finally {
+        button.disabled = false;
+        button.textContent = "Đăng nhập";
+      }
+    });
+
+    $("logoutButton").addEventListener("click", async () => {
+      await supabaseClient.auth.signOut();
+      showLogin("Đã đăng xuất khỏi VidNest Admin.");
+    });
+
+    $("refreshButton").addEventListener("click", async () => {
+      const button = $("refreshButton");
+      button.disabled = true;
+      button.textContent = "Đang tải...";
+
+      try {
+        await loadAdminData();
+      } catch (error) {
+        console.error("VidNest dashboard:", error);
+
+        showMessage(
+          "dashboardMessage",
+          "Không tải được dữ liệu: " + (error.message || "Lỗi API"),
+          "error"
+        );
+      } finally {
+        button.disabled = false;
+        button.textContent = "Làm mới";
+      }
+    });
+
+    $("userSearch").addEventListener("input", event => {
+      const query = event.target.value.toLowerCase().trim();
+
+      const filtered = usersData.filter(user =>
+        String(user.email || "").toLowerCase().includes(query) ||
+        String(user.id || "").toLowerCase().includes(query)
+      );
+
+      renderUsers(filtered);
+    });
+
+    document.querySelectorAll("[data-page]").forEach(button => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll("[data-page]").forEach(item =>
+          item.classList.remove("active")
+        );
+
+        button.classList.add("active");
+
+        ["overview", "users", "logs"].forEach(page => {
+          $("page-" + page).classList.toggle(
+            "hidden",
+            page !== button.dataset.page
+          );
+        });
+      });
+    });
+
+    // Tự kiểm tra phiên đăng nhập khi mở trang.
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_OUT" || !session) {
+        showLogin();
+      }
+    });
+
+    // Kiểm tra phiên hiện có khi trang được tải.
+    loadAdminData().catch(error => {
+      console.error("VidNest startup:", error);
+
+      showLogin(
+        "Chưa thể xác minh quyền quản trị. " +
+        "Kiểm tra Edge Function admin-stats và cấu hình Supabase."
+      );
+    });
+  </script>
+
 </body>
 </html>
