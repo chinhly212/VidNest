@@ -1179,6 +1179,131 @@ document.getElementById("addUser").addEventListener("click", () => {
   alert("Chức năng thêm người dùng cần được kết nối Supabase.");
 });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+<script>
+(async function initVidNestStats() {
+  const SUPABASE_URL = "https://xztwgjuherkqdvebkovz.supabase.co";
+
+  // Dùng publishable key của dự án Supabase.
+  const SUPABASE_KEY = "DAN_PUBLISHABLE_KEY_CUA_MAY_VAO_DAY";
+
+  const numberIds = [
+    "totalUsers",
+    "newUsersToday",
+    "successfulDownloads",
+    "failedDownloads"
+  ];
+
+  function showError(message) {
+    numberIds.forEach(id => {
+      const element = document.getElementById(id);
+      if (element) element.textContent = "—";
+    });
+
+    let notice = document.getElementById("statsError");
+
+    if (!notice) {
+      notice = document.createElement("div");
+      notice.id = "statsError";
+      notice.className = "notice";
+
+      const overview = document.getElementById("page-overview");
+      overview.appendChild(notice);
+    }
+
+    notice.textContent = message;
+  }
+
+  if (!window.supabase) {
+    showError("Không tải được thư viện Supabase.");
+    return;
+  }
+
+  const client = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+  async function loadStats() {
+    try {
+      const {
+        data: { session },
+        error: sessionError
+      } = await client.auth.getSession();
+
+      if (sessionError || !session) {
+        showError(
+          "Chưa đăng nhập. Hãy đăng nhập VidNest trước khi xem thống kê."
+        );
+        return;
+      }
+
+      const { data, error } = await client.functions.invoke(
+        "admin-stats",
+        {
+          method: "POST"
+        }
+      );
+
+      if (error) {
+        console.error("admin-stats:", error);
+        showError(
+          "Không lấy được số liệu. Hãy kiểm tra Function admin-stats và phiên đăng nhập."
+        );
+        return;
+      }
+
+      if (!data || !data.success) {
+        showError(
+          data?.message || "Không thể tải dữ liệu quản trị."
+        );
+        return;
+      }
+
+      const stats = data.stats || {};
+
+      document.getElementById("totalUsers").textContent =
+        Number(stats.totalUsers ?? 0).toLocaleString("vi-VN");
+
+      document.getElementById("newUsersToday").textContent =
+        Number(stats.newUsersToday ?? 0).toLocaleString("vi-VN");
+
+      document.getElementById("successfulDownloads").textContent =
+        Number(stats.successfulDownloads ?? 0).toLocaleString("vi-VN");
+
+      document.getElementById("failedDownloads").textContent =
+        Number(stats.failedDownloads ?? 0).toLocaleString("vi-VN");
+
+      const errorNotice = document.getElementById("statsError");
+      if (errorNotice) errorNotice.remove();
+
+      let updated = document.getElementById("statsUpdatedAt");
+
+      if (!updated) {
+        updated = document.createElement("p");
+        updated.id = "statsUpdatedAt";
+        updated.style.cssText =
+          "font-size:11px;color:#71849b;margin-top:12px";
+
+        document.getElementById("page-overview").appendChild(updated);
+      }
+
+      updated.textContent =
+        "Cập nhật lần cuối: " +
+        new Date(data.updatedAt || Date.now()).toLocaleString("vi-VN");
+
+    } catch (error) {
+      console.error(error);
+      showError("Có lỗi khi kết nối Supabase.");
+    }
+  }
+
+  await loadStats();
+
+  // Tự làm mới mỗi 30 giây.
+  setInterval(loadStats, 30000);
+})();
+</script>
 </body>
 </html>
